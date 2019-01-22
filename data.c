@@ -8,6 +8,12 @@ struct data_memory{
 	int num_data;
 	int data[256];
 };
+
+struct register_data{
+	int num_registers;
+	int registers_data[32];	
+};
+
 // A function to print the data
 void print_data(struct data_memory *mem){
 	printf("Number of data items: %i\n", mem->num_data);
@@ -26,4 +32,13 @@ void init_data_memory(FILE *dfp, struct data_memory *mem){
 		i++;
 	}
 	mem->num_data = i;
+}
+
+void init_register_data(struct register_data* registers){
+	int i;
+	registers->num_registers = 32;
+	for(i = 0; i < registers->num_registers; i++){
+		registers->registers_data[i] = -1;
+	}
+
 }

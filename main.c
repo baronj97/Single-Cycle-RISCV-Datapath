@@ -4,7 +4,9 @@
 #include "data.h"
 #include "instructionfetch.h"
 #include "decode.h"
-
+#include "memory.h"
+#include "writeback.h"
+#include "execute.h"
 int main(int argc, char** argv){
 	// Declare some file pointers
 	FILE *ifp, *dfp, *rfp;
@@ -20,38 +22,51 @@ int main(int argc, char** argv){
 
 	// Open the data memory file and load it into a struct
 	dfp = fopen("data_memory.txt", "r");
+
 	struct data_memory mem;
+	
 	init_data_memory(dfp, &mem);
-	print_data(&mem);
-	// Close the file
-	fclose(dfp);
+
+	struct register_data registers;
+	init_register_data(&registers);
 
 	// Initialize the program counter
 	int pc;
 	unsigned long int cur_instruct;
+	int offset = -1;
 	// Iterate over each instruction while incrementing the pc
 	// Decode the instructions in the loop as well
 	for(pc = 0; pc < instructions.num_instructions;pc++){
 		cur_instruct = instruction_fetch(&instructions, pc);
 		printf("The program counter is currently: %i\n",pc);
 	      	printf("The instruction is %lu\n", cur_instruct);	
+		/*Decode the instruction*/
+		struct decode_info decoded_instruction;
+		decode_instruction(cur_instruct, &decoded_instruction, &registers);
+		/*Execute the instruction*/
+		offset = execute(&decoded_instruction);
+		/*If the instruction is i type, feed it to the mem stage*/
+		if(decoded_instruction.i_type.valid)
+			memory(offset, &decoded_instruction, &mem);
+		/*Go to writeback stage*/
+		writeback(&decoded_instruction, &registers);
 	}
 	
 	// This is all testing... will need to move into the for-loop
-	unsigned int test = 0b10000011111100000001000111011110;
+	unsigned int test = 0b00000000000100000000000110000000;
 	// Declare a decode struct and decode the instruction
-	struct decode_info decoded_instruction;
-	decode_instruction(test, &decoded_instruction);
-	// Open the register file to read the registers required by the instruction
-	rfp = fopen("register_file.txt", "r");
-	unsigned int *val = read_register(decoded_instruction.r_type.dest_reg, rfp);
+	/*struct decode_info decoded_instruction;
+	decode_instruction(test, &decoded_instruction, &registers);
+	
+	printf("Valid: %i\n",decoded_instruction.r_type.valid);
+	printf("Opcode: %i\n", decoded_instruction.r_type.opcode);
+	printf("Dest Reg: %i\n", decoded_instruction.r_type.dest_reg);
+	printf("Source reg1: %i\n", decoded_instruction.r_type.source_reg_1);
+	printf("Source reg1 value: %i\n", decoded_instruction.r_type.source_reg_1_value);
+	*/
+	dump_registers_to_data_memory(&registers, dfp);
+	
+	fclose(dfp);
 
-	// Some more testing. Delete this
-	decoded_instruction.r_type.dest_reg = *val;
-	printf("value = %u\n",*val);
-	free(val);
-	printf("Dest reg value: %u\n", decoded_instruction.r_type.dest_reg_value);
-	// Close the register file
-	fclose(rfp);
 	return 0;
 }

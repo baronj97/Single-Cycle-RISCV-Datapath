@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include "data.h"
 struct r_type_info{
 	int valid;
 	unsigned int opcode;
@@ -32,9 +34,7 @@ struct decode_info{
 
 };
 
-
 unsigned int get_bits(unsigned int start, unsigned int end, unsigned int original);
 
-unsigned int* read_register(unsigned int reg_address,FILE *rfp);
 
-void decode_instruction(unsigned int instruction, struct decode_info *decode);
+void decode_instruction(unsigned int instruction, struct decode_info *decode, struct register_data* registers);
