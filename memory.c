@@ -13,6 +13,6 @@
 void memory(unsigned int offset, struct decode_info* decode, struct data_memory* data_mem){
 	/*Let's just make sure this is the right type*/
 	if(decode->i_type.valid){
-		decode->i_type.dest_reg_value = data_mem->data[offset];
+		decode->i_type.i_dest_reg_value = data_mem->data[offset];
 	}
 }
