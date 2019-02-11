@@ -1,4 +1,4 @@
-TARGET = risc
+TARGET = simulator
 CC = gcc
 LIBS = -lreadline
 CFLAGS = -g -Wall

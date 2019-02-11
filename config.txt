@@ -1,0 +1,2 @@
+nummber of cores: 1
+frequency: 0.5

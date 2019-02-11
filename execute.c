@@ -53,7 +53,9 @@ int execute(struct decode_info *decode){
 				decode->r_type.r_dest_reg_value = decode->r_type.r_source_reg_1_value & decode->r_type.r_source_reg_2_value;
 				break;
 			default:
-				printf("This type of operation is not supported");
+
+				printf("This type of operation is not supported\n");
+
 		
 		}
 		/* The return value for this function is the address for the MEM stage
@@ -150,7 +152,8 @@ int execute(struct decode_info *decode){
 				/*decode->uj_type.uj_dest_reg_value = PC + 4; PC - PC + (imm,1b'0)*/
 				break;
 			default:
-				printf("This type of operation is not supported");
+				printf("This type of operation is not supported\n");
+
 		}
 	} 
 	else 
