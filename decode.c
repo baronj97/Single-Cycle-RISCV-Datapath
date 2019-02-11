@@ -55,11 +55,9 @@ void decode_instruction(unsigned int instruction, struct decode_info *decode, st
 
 			break;
 		// I-type (addi slli xori srli ori andi)
-		//case 0b0010011:
-		//	;
+		case 0b0010011:
 		// Special I-type (ld) 
-		//case 0b0000011:
-		//	;
+		case 0b0000011:
 		// Special I-type (jalr)
 		case 0b1100111:
 			;
