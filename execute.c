@@ -53,6 +53,7 @@ int execute(struct decode_info *decode){
 				decode->r_type.r_dest_reg_value = decode->r_type.r_source_reg_1_value & decode->r_type.r_source_reg_2_value;
 				break;
 			default:
+
 				printf("This type of operation is not supported\n");
 		}
 		/* The return value for this function is the address for the MEM stage
