@@ -55,8 +55,6 @@ int execute(struct decode_info *decode){
 			default:
 
 				printf("This type of operation is not supported\n");
-
-		
 		}
 		/* The return value for this function is the address for the MEM stage
 		 * Since R type does not require this, let's return -1 */
@@ -153,7 +151,6 @@ int execute(struct decode_info *decode){
 				break;
 			default:
 				printf("This type of operation is not supported\n");
-
 		}
 	} 
 	else 
