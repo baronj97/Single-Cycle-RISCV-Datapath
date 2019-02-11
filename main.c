@@ -13,7 +13,7 @@
 int main(int argc, char** argv){
 	
     // Declare some file pointers
-	FILE *ifp, *dfp, *rfp;
+	FILE *ifp, *dfp;
 	// Open the instruction memory file
 	ifp = fopen("instruction_memory.txt", "r");
 
@@ -22,7 +22,6 @@ int main(int argc, char** argv){
     //init_instruction_memory(ifp, &instructions);
 	assembly_to_machine(ifp, &instructions);
 
-    print_instructions(&instructions);
 	// Close the file
 	fclose(ifp);
 
@@ -45,7 +44,7 @@ int main(int argc, char** argv){
 	for(pc = 0; pc < instructions.num_instructions;pc++){
 		cur_instruct = instruction_fetch(&instructions, pc);
 		printf("The program counter is currently: %i\n",pc);
-	      	printf("The instruction is %lu\n", cur_instruct);	
+	    printf("The instruction is %d\n", cur_instruct);	
 		/*Decode the instruction*/
 		struct decode_info decoded_instruction;
 		decode_instruction(cur_instruct, &decoded_instruction, &registers);
@@ -59,7 +58,6 @@ int main(int argc, char** argv){
 	}
 	
 	// This is all testing... will need to move into the for-loop
-	unsigned int test = 0b00000000000100000000000110000000;
 	// Declare a decode struct and decode the instruction
 	dump_registers_to_data_memory(&registers, dfp);
 	fclose(dfp);

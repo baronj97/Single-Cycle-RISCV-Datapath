@@ -42,7 +42,7 @@ int execute(struct decode_info *decode){
 				decode->r_type.dest_reg_value = decode->r_type.source_reg_1_value & decode->r_type.source_reg_2_value;
 				break;
 			default:
-				printf("This type of operation is not supported");
+				printf("This type of operation is not supported\n");
 
 		
 		}
@@ -65,7 +65,7 @@ int execute(struct decode_info *decode){
 				offset = decode->i_type.dest_reg;
 				break;
 			default:
-				printf("This type of operation is not supported");
+				printf("This type of operation is not supported\n");
 
 		}
 
