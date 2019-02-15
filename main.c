@@ -22,6 +22,8 @@ int main(int argc, char** argv){
     //init_instruction_memory(ifp, &instructions);
 	assembly_to_machine(ifp, &instructions);
 
+    instructions.num_instructions = 3;
+    instructions.instructions[0] = 0b000000000000000000;
 	// Close the file
 	fclose(ifp);
 
@@ -62,6 +64,14 @@ int main(int argc, char** argv){
 	dump_registers_to_data_memory(&registers, dfp);
 	fclose(dfp);
 
-
+    /*0000010 10011 01111 000 10001 0001110 */
+    /* 2         19   15   0   17     14*/
+    int test = 0b00000101001101111000100010001110;
+    printf("opcode:%d should be 14\n", get_bits(1,8,test)); // get_bits(start+1, end+2, bit_sequence); 0 indexed
+    printf("rd:%d should be 17\n", get_bits(8, 13, test));
+    printf("funct3:%d should be 0\n", get_bits(13,15,test));
+    printf("rs1:%d should 15\n", get_bits(16, 21, test));
+    printf("rs2:%d should be 19\n", get_bits(21, 26, test));
+    printf("funct7:%d should be 2\n", get_bits(26, 33, test));
 	return 0;
 }

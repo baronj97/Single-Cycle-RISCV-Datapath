@@ -3,7 +3,7 @@
 
 struct instruction_memory{
 	int num_instructions;
-	unsigned long instructions[256];
+	int *instructions_array[256];
 
 };
 

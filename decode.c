@@ -2,17 +2,14 @@
 #include <stdlib.h>
 #include "data.h"
 #include "decode.h"
-
+#include "assembler.h"
 // A function that returns the specified array of bits in a number
-unsigned int get_bits(unsigned int start, unsigned int end, unsigned int original){
-	unsigned int k = end - start;
-	return (((1 << k) -1 ) & (original >> (start -1)));
 
-}
-
-void decode_instruction(unsigned int instruction, struct decode_info *decode, struct register_data* registers){
+void decode_instruction(int* instruction, struct decode_info *decode, struct register_data* registers){
 	// All opcode in same location!i
-	unsigned int opcode = get_bits(1,7,instruction);
+	int opcode_arr[7];
+    get_bits(instruction, 0, 6, opcode_arr);
+    unsigned int opcode = convert_arr_to_decimal(opcode_arr, 7);
 	
 	struct r_type_info r_type_data;
 	struct i_type_info i_type_data;
@@ -24,6 +21,14 @@ void decode_instruction(unsigned int instruction, struct decode_info *decode, st
 		// R-type (add sub sll srl xor or and)
 		case 0b0110011:
 			;
+
+            int funct3[3];
+            int funct7[7];
+            int rd[5];
+            int rs1[5];
+            int rs2[5];
+            get_bits(
+
 			unsigned int r_dest_reg = get_bits(8,12,instruction);
 			unsigned int r_funct3 = get_bits(13,15,instruction);
 			unsigned int r_source_reg_1 = get_bits(16,20,instruction);
