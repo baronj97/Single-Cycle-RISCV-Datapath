@@ -10,6 +10,15 @@
 #include "assembler.h"
 #include "config.h"
 
+void print_instruction(int* instruct){
+    int i;
+    for(i = 0; i < 32; i++)
+        printf("%d", instruct[i]);
+    printf("\n");
+
+}
+
+
 int main(int argc, char** argv){
 	
     // Declare some file pointers
@@ -43,7 +52,8 @@ int main(int argc, char** argv){
 	for(pc = 0; pc < instructions.num_instructions;pc++){
 		int instruct[32];
 		instruction_fetch(&instructions, pc, instruct);
-		/*Decode the instruction*/
+		print_instruction(instruct);
+        /*Decode the instruction*/
 		struct decode_info decoded_instruction;
 		decode_instruction(instruct, &decoded_instruction, &registers);
 		/*Execute the instruction*/

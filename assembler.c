@@ -23,16 +23,6 @@ int modify_bit(int n, int p, int b){
     int mask = 1 << p;
     return (n & ~mask) | ((b << p) & mask);
 }
-/*
-int modify_bits(int instruction, int start, int finish, int *arr){
-    int i;
-    for(i = (finish - start)-1; i >=0; i--){
-        int bit = arr[i];
-        instruction = modify_bit(instruction, i, bit);
-    }
-    return instruction;
-}
-*/
 void modify_bits(int *instruction, int start, int finish, int *num){
     int i;
     int counter = 0;
@@ -209,8 +199,38 @@ void assembly_to_machine(FILE *fp, struct instruction_memory *instruct){
 
             convert_to_binary_arr(5, atoi(i_type_split[2]), imm_i);
             modify_bits(instruction_template, 20, 31, imm_i);
+            if(!(strcmp(i_types[i], "ld"))){
+                convert_to_binary_arr(3,3, funct3);
+                modify_bits(instruction_template, 12, 14, funct3);
+                char* token;
+                char* rest = instruction;
+                split_count = 0;
+                while((token = strtok_r(rest, " ", &rest))){
+                    if(split_count == 1){
+                    char *temp = token;
+                    temp++;
+                    temp[strlen(temp) -1 ] = 0;
+                    strcpy(i_type_split[0], temp);
+                }
+                if(split_count == 2){
+                    char *temp2 = strtok_r(token, "(", &token);
+                    token++;
+                    token[strlen(token) -1 ] = 0;
+                    strcpy(i_type_split[1], token);
+                    strcpy(i_type_split[2], temp2);
+                }   
 
-            if(!(strcmp(i_types[i], "addi"))){
+                 split_count++;
+             }
+                convert_to_binary_arr(5, atoi(i_type_split[0]),rd);
+                modify_bits(instruction_template,15, 19, rd);
+        
+                convert_to_binary_arr(5, atoi(i_type_split[1]), rs1);
+                modify_bits(instruction_template, 20, 24, rs1);
+
+
+            }
+            else if(!(strcmp(i_types[i], "addi"))){
                 convert_to_binary_arr(3,0, funct3);
                  modify_bits(instruction_template, 12, 14, funct3);
             }

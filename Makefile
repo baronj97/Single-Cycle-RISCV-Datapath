@@ -1,7 +1,7 @@
 TARGET = simulator
 CC = gcc
 LIBS = -lreadline
-CFLAGS = -g -Wall
+CFLAGS = -g
 
 .PHONY: default all clean
 
