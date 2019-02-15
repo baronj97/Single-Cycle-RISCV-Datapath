@@ -7,6 +7,4 @@ struct instruction_memory{
 
 };
 
-void init_instruction_memory(FILE *ifp, struct instruction_memory *instruct);
-void print_instructions(struct instruction_memory *instruct);
 #endif

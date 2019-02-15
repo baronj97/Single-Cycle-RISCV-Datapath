@@ -70,7 +70,4 @@ struct decode_info{
 	struct uj_type_info uj_type;
 };
 
-unsigned int get_bits(unsigned int start, unsigned int end, unsigned int original);
-
-
-void decode_instruction(unsigned int instruction, struct decode_info *decode, struct register_data* registers);
+void decode_instruction(int* instruction, struct decode_info *decode, struct register_data* registers);

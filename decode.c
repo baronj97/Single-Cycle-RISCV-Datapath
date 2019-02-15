@@ -6,10 +6,11 @@
 // A function that returns the specified array of bits in a number
 
 void decode_instruction(int* instruction, struct decode_info *decode, struct register_data* registers){
-	// All opcode in same location!i
-	int opcode_arr[7];
-    get_bits(instruction, 0, 6, opcode_arr);
-    unsigned int opcode = convert_arr_to_decimal(opcode_arr, 7);
+	// All opcode in same location!
+	int opcode_arr[7]; 
+	unsigned int opcode;
+	get_bits(instruction, 0, 6, opcode_arr);
+    	opcode = convert_arr_to_decimal(opcode_arr, 7);
 	
 	struct r_type_info r_type_data;
 	struct i_type_info i_type_data;
@@ -21,20 +22,26 @@ void decode_instruction(int* instruction, struct decode_info *decode, struct reg
 		// R-type (add sub sll srl xor or and)
 		case 0b0110011:
 			;
-
-            int funct3[3];
-            int funct7[7];
-            int rd[5];
-            int rs1[5];
-            int rs2[5];
-            get_bits(
-
-			unsigned int r_dest_reg = get_bits(8,12,instruction);
-			unsigned int r_funct3 = get_bits(13,15,instruction);
-			unsigned int r_source_reg_1 = get_bits(16,20,instruction);
-			unsigned int r_source_reg_2 = get_bits(21,25,instruction);
-			unsigned int r_funct7 = get_bits(26,32,instruction);
-
+			int r_dest_reg_arr[5];
+			get_bits(instruction, 7, 11, r_dest_reg_arr);
+			unsigned int r_dest_reg = convert_arr_to_decimal(r_dest_reg_arr, 5);
+		       
+			int r_funct3_arr[3];
+			get_bits(instruction, 12, 14, r_funct3_arr);
+			unsigned int r_funct3 = convert_arr_to_decimal(r_funct3_arr, 3);
+				
+			int r_source_reg_1_arr[5];
+			get_bits(instruction, 15, 19, r_source_reg_1_arr);
+			unsigned int r_source_reg_1 = convert_arr_to_decimal(r_source_reg_1_arr, 5);
+								
+			int r_source_reg_2_arr[5];
+			get_bits(instruction, 20, 24, r_source_reg_2_arr);
+			unsigned int r_source_reg_2 = convert_arr_to_decimal(r_source_reg_2_arr, 5);
+		
+			int r_funct7_arr[7];
+			get_bits(instruction, 25, 31, r_funct7_arr);
+			unsigned int r_funct7 = convert_arr_to_decimal(r_funct7_arr, 7);
+		
 			r_type_data.valid = 1;
 			r_type_data.opcode = opcode;
 			r_type_data.r_dest_reg = r_dest_reg;
@@ -66,10 +73,21 @@ void decode_instruction(int* instruction, struct decode_info *decode, struct reg
 		// Special I-type (jalr)
 		case 0b1100111:
 			;
-			unsigned int i_dest_reg = get_bits(8,12,instruction);
-			unsigned int i_funct3 = get_bits(13,15,instruction);
-			unsigned int i_source_reg = get_bits(16,20,instruction);
-			unsigned int i_imm = get_bits(21,32,instruction);
+			int i_dest_reg_arr[5];
+			get_bits(instruction, 7, 11, i_dest_reg_arr);
+			unsigned int i_dest_reg = convert_arr_to_decimal(i_dest_reg_arr, 5);
+		       
+			int i_funct3_arr[3];
+			get_bits(instruction, 12, 14, i_funct3_arr);
+			unsigned int i_funct3 = convert_arr_to_decimal(i_funct3_arr, 3);
+				
+			int i_source_reg_arr[5];
+			get_bits(instruction, 15, 19, i_source_reg_arr);
+			unsigned int i_source_reg = convert_arr_to_decimal(i_source_reg_arr, 5);
+								
+			int i_imm_arr[11];
+			get_bits(instruction, 20, 31, i_imm_arr);
+			unsigned int i_imm = convert_arr_to_decimal(i_imm_arr, 11);
 			
 			i_type_data.valid = 1;
 			i_type_data.opcode = opcode;
@@ -96,12 +114,26 @@ void decode_instruction(int* instruction, struct decode_info *decode, struct reg
 		// S-type (sd)
 		case 0b0100011:
 			;
-			unsigned int s_imm_1 = get_bits(8,12,instruction);
-			unsigned int s_funct3 = get_bits(13,15,instruction);
-			unsigned int s_source_reg_1 = get_bits(16,20,instruction);
-			unsigned int s_source_reg_2 = get_bits(21,25,instruction);
-			unsigned int s_imm_2 = get_bits(26,32,instruction);
-			
+			int s_imm_1_arr[5];
+			get_bits(instruction, 7, 11, s_imm_1_arr);
+			unsigned int s_imm_1 = convert_arr_to_decimal(s_imm_1_arr, 5);
+		       
+			int s_funct3_arr[3];
+			get_bits(instruction, 12, 14, s_funct3_arr);
+			unsigned int s_funct3 = convert_arr_to_decimal(s_funct3_arr, 3);
+				
+			int s_source_reg_1_arr[5];
+			get_bits(instruction, 15, 19, s_source_reg_1_arr);
+			unsigned int s_source_reg_1 = convert_arr_to_decimal(s_source_reg_1_arr, 5);
+								
+			int s_source_reg_2_arr[5];
+			get_bits(instruction, 20, 24, s_source_reg_2_arr);
+			unsigned int s_source_reg_2 = convert_arr_to_decimal(s_source_reg_2_arr, 5);
+		
+			int s_imm_2_arr[7];
+			get_bits(instruction, 25, 31, s_imm_2_arr);
+			unsigned int s_imm_2 = convert_arr_to_decimal(s_imm_2_arr, 7);
+		
 			s_type_data.valid = 1;
 			s_type_data.opcode = opcode;
 			s_type_data.s_imm_1 = s_imm_1;
@@ -129,11 +161,25 @@ void decode_instruction(int* instruction, struct decode_info *decode, struct reg
 		// SB-type (beq bne blt bge)
 		case 0b1100011:
 			;
-			unsigned int sb_imm_1 = get_bits(8,12,instruction);
-			unsigned int sb_funct3 = get_bits(13,15,instruction);
-			unsigned int sb_source_reg_1 = get_bits(16,20,instruction);
-			unsigned int sb_source_reg_2 = get_bits(21,25,instruction);
-			unsigned int sb_imm_2 = get_bits(26,32,instruction);
+			int sb_imm_1_arr[5];
+			get_bits(instruction, 7, 11, sb_imm_1_arr);
+			unsigned int sb_imm_1 = convert_arr_to_decimal(sb_imm_1_arr, 5);
+		       
+			int sb_funct3_arr[3];
+			get_bits(instruction, 12, 14, sb_funct3_arr);
+			unsigned int sb_funct3 = convert_arr_to_decimal(sb_funct3_arr, 3);
+				
+			int sb_source_reg_1_arr[5];
+			get_bits(instruction, 15, 19, sb_source_reg_1_arr);
+			unsigned int sb_source_reg_1 = convert_arr_to_decimal(sb_source_reg_1_arr, 5);
+								
+			int sb_source_reg_2_arr[5];
+			get_bits(instruction, 20, 24, sb_source_reg_2_arr);
+			unsigned int sb_source_reg_2 = convert_arr_to_decimal(sb_source_reg_2_arr, 5);
+		
+			int sb_imm_2_arr[7];
+			get_bits(instruction, 25, 31, sb_imm_2_arr);
+			unsigned int sb_imm_2 = convert_arr_to_decimal(sb_imm_2_arr, 7);
 			
 			sb_type_data.valid = 1;
 			sb_type_data.opcode = opcode;
@@ -162,8 +208,13 @@ void decode_instruction(int* instruction, struct decode_info *decode, struct reg
 		// UJ-type (jal)
 		case 0b1101111:
 			;
-			unsigned int uj_dest_reg = get_bits(8,12,instruction);
-			unsigned int uj_imm = get_bits(13,32,instruction);
+			int uj_dest_reg_arr[5];
+			get_bits(instruction, 7, 11, uj_dest_reg_arr);
+			unsigned int uj_dest_reg = convert_arr_to_decimal(uj_dest_reg_arr, 5);
+		       
+			int uj_imm_arr[19];
+			get_bits(instruction, 12, 31, uj_imm_arr);
+			unsigned int uj_imm = convert_arr_to_decimal(uj_imm_arr, 3);
 			
 			uj_type_data.valid = 1;
 			uj_type_data.opcode = opcode;
