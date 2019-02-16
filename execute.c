@@ -145,7 +145,7 @@ int execute(struct decode_info *decode){
 	} /* UJ-type */
 	else if (decode->uj_type.valid){
 		switch(decode->uj_type.opcode){
-			case 1101111:
+			case 0b1101111:
 				/*JAL*/
 				/*decode->uj_type.uj_dest_reg_value = PC + 4; PC - PC + (imm,1b'0)*/
 				break;

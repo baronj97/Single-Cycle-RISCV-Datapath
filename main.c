@@ -55,7 +55,11 @@ int main(int argc, char** argv){
 		print_instruction(instruct);
         /*Decode the instruction*/
 		struct decode_info decoded_instruction;
-		decode_instruction(instruct, &decoded_instruction, &registers);
+		int opcode[7];
+        get_bits(instruct, 0, 6, opcode);
+        int opcode_t = convert_arr_to_decimal(opcode, 7);
+        printf("%d\n", opcode_t);
+        decode_instruction(instruct, &decoded_instruction, &registers);
 		/*Execute the instruction*/
 		offset = execute(&decoded_instruction);
 		/*If the instruction is i type, feed it to the mem stage*/
