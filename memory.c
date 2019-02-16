@@ -14,7 +14,7 @@ void memory(struct decode_info* decode, struct data_memory* data_mem, struct reg
 	/*Let's just make sure this is the right type*/
 	if(decode->i_type.valid && decode->i_type.opcode == 0b0000011){
         int offset = decode->i_type.i_source_reg + decode->i_type.i_imm;
-        printf("%d\n", offset);
+        printf("offset%d\n", offset);
         int reg_dest = decode->i_type.i_dest_reg - 1;
 
 		reg_data->registers_data[reg_dest]= data_mem->data[offset];

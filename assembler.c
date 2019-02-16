@@ -158,7 +158,6 @@ void assembly_to_machine(FILE *fp, struct instruction_memory *instruct){
     int split_count;
 
     if(not_decoded){
-        printf("checking in i type\n");
         char i_types[8][5];
     strcpy(i_types[0], "ld");
     strcpy(i_types[1], "addi");
@@ -195,7 +194,7 @@ void assembly_to_machine(FILE *fp, struct instruction_memory *instruct){
             convert_to_binary_arr(5, atoi(i_type_split[1]), rs1);
             modify_bits(instruction_template, 15, 19, rs1);
 
-            convert_to_binary_arr(5, atoi(i_type_split[2]), imm_i);
+            convert_to_binary_arr(11, atoi(i_type_split[2]), imm_i);
             modify_bits(instruction_template, 20, 31, imm_i);
             if(!(strcmp(i_types[i], "ld")))
             {
@@ -225,12 +224,15 @@ void assembly_to_machine(FILE *fp, struct instruction_memory *instruct){
 
                  split_count++;
              }
+
                 convert_to_binary_arr(5, atoi(i_type_split[0]),rd);
-                modify_bits(instruction_template,15, 19, rd);
+                modify_bits(instruction_template,7, 11, rd);
         
                 convert_to_binary_arr(5, atoi(i_type_split[1]), rs1);
-                modify_bits(instruction_template, 20, 24, rs1);
-
+                modify_bits(instruction_template, 15, 19, rs1);
+                
+                convert_to_binary_arr(11, atoi(i_type_split[2]), imm_i);
+                modify_bits(instruction_template, 20, 31, imm_i);
 
             }
             else if(!(strcmp(i_types[i], "addi"))){
@@ -301,7 +303,6 @@ void assembly_to_machine(FILE *fp, struct instruction_memory *instruct){
     }
     }
     if(not_decoded){
-        printf("checking in the s type\n");
         char s_types[1][3];
     strcpy(s_types[0], "sd");
     if(strstr(test, s_types[0]) != NULL){
@@ -361,7 +362,6 @@ void assembly_to_machine(FILE *fp, struct instruction_memory *instruct){
     }
     }
     if(not_decoded){
-        printf("checking here?\n");
         char r_types[7][4];
     strcpy(r_types[0], "add");
     strcpy(r_types[1], "sub");
@@ -564,10 +564,6 @@ void assembly_to_machine(FILE *fp, struct instruction_memory *instruct){
             }
             split_count++;
         }
-        for(a =0; a < 7; a++){
-            printf("%d",opcode[a]);
-        }
-        printf("\n");
 
         convert_to_binary_arr(5, atoi(uj_type_split[0]),rd);
         modify_bits(instruction_template,7, 11, rd);

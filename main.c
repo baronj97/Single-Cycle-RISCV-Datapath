@@ -53,7 +53,7 @@ int main(int argc, char** argv){
 	for(pc = 0; pc < instructions.num_instructions;pc++){
 		int instruct[32];
 		instruction_fetch(&instructions, pc, instruct);
-        print_instruction(instruct);
+ //       print_instruction(instruct);
         /*Decode the instruction*/
 		struct decode_info decoded_instruction;
         decode_instruction(instruct, &decoded_instruction, &registers);
@@ -64,6 +64,8 @@ int main(int argc, char** argv){
 			memory(&decoded_instruction, &mem, &registers);
 		/*Go to writeback stage*/
 		writeback(&decoded_instruction, &registers);
+        if(pc == 2)    
+        printf("dest reg value: %d\n", decoded_instruction.r_type.r_dest_reg_value);
         if(branch > 0){
             pc = branch - 1;
         }   

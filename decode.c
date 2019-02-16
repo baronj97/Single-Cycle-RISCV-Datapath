@@ -11,7 +11,6 @@ void decode_instruction(int* instruction, struct decode_info *decode, struct reg
 	unsigned int opcode;
 	get_bits(instruction, 0, 6, opcode_arr);
     	opcode = convert_arr_to_decimal(opcode_arr, 7);
-	printf("%d\n", opcode);
 	struct r_type_info r_type_data;
 	struct i_type_info i_type_data;
 	struct s_type_info s_type_data;
@@ -76,7 +75,6 @@ void decode_instruction(int* instruction, struct decode_info *decode, struct reg
 			int i_dest_reg_arr[5];
 			get_bits(instruction, 7, 11, i_dest_reg_arr);
 			unsigned int i_dest_reg = convert_arr_to_decimal(i_dest_reg_arr, 5);
-		    printf("opcode%d\n", opcode);  
 			int i_funct3_arr[3];
 			get_bits(instruction, 12, 14, i_funct3_arr);
 			unsigned int i_funct3 = convert_arr_to_decimal(i_funct3_arr, 3);
@@ -99,6 +97,11 @@ void decode_instruction(int* instruction, struct decode_info *decode, struct reg
 			/*Read the value of the source reg here*/
 			i_type_data.i_source_reg_value = registers->registers_data[i_source_reg];
 			decode->i_type = i_type_data;
+                
+            printf("dest_reg: %d\n", i_dest_reg);
+            printf("source_reg: %d\n", i_source_reg);
+
+            printf("imm: %d\n", i_imm);
 
 			r_type_data.valid = 0;
 			s_type_data.valid = 0;
