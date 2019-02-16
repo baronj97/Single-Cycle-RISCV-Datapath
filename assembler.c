@@ -23,16 +23,6 @@ int modify_bit(int n, int p, int b){
     int mask = 1 << p;
     return (n & ~mask) | ((b << p) & mask);
 }
-/*
-int modify_bits(int instruction, int start, int finish, int *arr){
-    int i;
-    for(i = (finish - start)-1; i >=0; i--){
-        int bit = arr[i];
-        instruction = modify_bit(instruction, i, bit);
-    }
-    return instruction;
-}
-*/
 void modify_bits(int *instruction, int start, int finish, int *num){
     int i;
     int counter = 0;
@@ -102,7 +92,7 @@ void assembly_to_machine(FILE *fp, struct instruction_memory *instruct){
     int rs1[5];
     int rs2[5];
     int imm_i[12];
-    int imm_uj[20];
+    int imm_uj[19];
     int imm_s[12];
     int imm_sb[12];
     /*
@@ -168,6 +158,7 @@ void assembly_to_machine(FILE *fp, struct instruction_memory *instruct){
     int split_count;
 
     if(not_decoded){
+        printf("checking in i type\n");
         char i_types[8][5];
     strcpy(i_types[0], "ld");
     strcpy(i_types[1], "addi");
@@ -182,9 +173,6 @@ void assembly_to_machine(FILE *fp, struct instruction_memory *instruct){
         if(strstr(instruction, i_types[i]) != NULL){
             /* Deal with I-types from here*/
             /* Assembly: addi x7, x8, imm*/
-            convert_to_binary_arr(7, 3, opcode);
-            //instruction_template = modify_bits(instruction_template, 0, 7, opcode);
-            modify_bits(instruction_template, 0, 6, opcode);
             char i_type_split[3][256];
             char* token;
             char* rest = instruction;
@@ -209,47 +197,112 @@ void assembly_to_machine(FILE *fp, struct instruction_memory *instruct){
 
             convert_to_binary_arr(5, atoi(i_type_split[2]), imm_i);
             modify_bits(instruction_template, 20, 31, imm_i);
+            if(!(strcmp(i_types[i], "ld")))
+            {
+                convert_to_binary_arr(7, 3, opcode);
+                //instruction_template = modify_bits(instruction_template, 0, 7, opcode);
+                modify_bits(instruction_template, 0, 6, opcode);
 
-            if(!(strcmp(i_types[i], "addi"))){
+                convert_to_binary_arr(3,3, funct3);
+                modify_bits(instruction_template, 12, 14, funct3);
+                char* token;
+                char* rest = instruction;
+                split_count = 0;
+                while((token = strtok_r(rest, " ", &rest))){
+                    if(split_count == 1){
+                    char *temp = token;
+                    temp++;
+                    temp[strlen(temp) -1 ] = 0;
+                    strcpy(i_type_split[0], temp);
+                }
+                if(split_count == 2){
+                    char *temp2 = strtok_r(token, "(", &token);
+                    token++;
+                    token[strlen(token) -1 ] = 0;
+                    strcpy(i_type_split[1], token);
+                    strcpy(i_type_split[2], temp2);
+                }   
+
+                 split_count++;
+             }
+                convert_to_binary_arr(5, atoi(i_type_split[0]),rd);
+                modify_bits(instruction_template,15, 19, rd);
+        
+                convert_to_binary_arr(5, atoi(i_type_split[1]), rs1);
+                modify_bits(instruction_template, 20, 24, rs1);
+
+
+            }
+            else if(!(strcmp(i_types[i], "addi"))){
+                convert_to_binary_arr(7, 19, opcode);
+                //instruction_template = modify_bits(instruction_template, 0, 7, opcode);
+                modify_bits(instruction_template, 0, 6, opcode);
+    
                 convert_to_binary_arr(3,0, funct3);
                  modify_bits(instruction_template, 12, 14, funct3);
             }
             else if(!(strcmp(i_types[i], "slli"))){
+                
+                convert_to_binary_arr(7, 19, opcode);
+                modify_bits(instruction_template, 0, 6, opcode);
+
                 convert_to_binary_arr(3,1, funct3);
                 modify_bits(instruction_template, 12, 14, funct3);
 
             }
             else if(!(strcmp(i_types[i], "xori"))){
+                 convert_to_binary_arr(7, 19, opcode);
+                //instruction_template = modify_bits(instruction_template, 0, 7, opcode);
+                modify_bits(instruction_template, 0, 6, opcode);
+
+                
                 convert_to_binary_arr(3,4, funct3);
                 modify_bits(instruction_template, 12, 14, funct3);
 
             }
             else if(!(strcmp(i_types[i], "srli"))){
+                 convert_to_binary_arr(7, 19, opcode);
+                //instruction_template = modify_bits(instruction_template, 0, 7, opcode);
+                modify_bits(instruction_template, 0, 6, opcode);
+
                 convert_to_binary_arr(3,5, funct3);
                 modify_bits(instruction_template, 12, 14, funct3);
 
             }
             else if(!(strcmp(i_types[i], "ori"))){
+                 convert_to_binary_arr(7, 19, opcode);
+                //instruction_template = modify_bits(instruction_template, 0, 7, opcode);
+                modify_bits(instruction_template, 0, 6, opcode);
+
                 convert_to_binary_arr(3,6, funct3);
                 modify_bits(instruction_template, 12, 14, funct3);
 
             }
             else if(!(strcmp(i_types[i], "andi"))){
+                 convert_to_binary_arr(7, 19, opcode);
+                //instruction_template = modify_bits(instruction_template, 0, 7, opcode);
+                modify_bits(instruction_template, 0, 6, opcode);
+
                 convert_to_binary_arr(3,7, funct3);
                 modify_bits(instruction_template, 12, 14, funct3);
 
             }
             else if(!(strcmp(i_types[i], "jalr"))){
+                convert_to_binary_arr(7, 103, opcode);
+                //instruction_template = modify_bits(instruction_template, 0, 7, opcode);
+                modify_bits(instruction_template, 0, 6, opcode);
+
                 convert_to_binary_arr(3,0, funct3);
                 modify_bits(instruction_template, 12, 14, funct3);
 
             }
+            not_decoded = 0;
         }
     }
-    not_decoded = 0;
     }
     if(not_decoded){
-    char s_types[1][3];
+        printf("checking in the s type\n");
+        char s_types[1][3];
     strcpy(s_types[0], "sd");
     if(strstr(test, s_types[0]) != NULL){
         /* Assembly: sw rs2, imm(rs1)*/
@@ -304,12 +357,12 @@ void assembly_to_machine(FILE *fp, struct instruction_memory *instruct){
         temp2[0] = imm_s[0];
         modify_bits(instruction_template, 7, 11, temp1);
         modify_bits(instruction_template, 25,31, temp2);
-
+        not_decoded = 0;
     }
-    not_decoded = 0;
     }
     if(not_decoded){
-    char r_types[7][4];
+        printf("checking here?\n");
+        char r_types[7][4];
     strcpy(r_types[0], "add");
     strcpy(r_types[1], "sub");
     strcpy(r_types[2], "sll");
@@ -403,9 +456,9 @@ void assembly_to_machine(FILE *fp, struct instruction_memory *instruct){
                 modify_bits(instruction_template, 25, 31, funct7);
 
             }
+            not_decoded = 0;
         }
     }
-    not_decoded = 0;
     }
 
     if(not_decoded){
@@ -478,9 +531,9 @@ void assembly_to_machine(FILE *fp, struct instruction_memory *instruct){
                 modify_bits(instruction_template, 12, 14, funct3);
 
             }
+            not_decoded = 0;
         }
     }
-    not_decoded = 0;
     }
 
     if(not_decoded){
@@ -489,11 +542,16 @@ void assembly_to_machine(FILE *fp, struct instruction_memory *instruct){
     if(strstr(instruction, uj_types[0]) != NULL){
         /*deal with uj types*/
         /* Assembly: jal rd, imm*/
-        convert_to_binary_arr(7,115 , opcode);
+        convert_to_binary_arr(7,111 , opcode);
+        int a;
+        for(a =0; a < 7; a++){
+            printf("%d",opcode[a]);
+        }
+        printf("\n");
         modify_bits(instruction_template, 0, 6, opcode);
         char uj_type_split[2][256];
         char* token;
-        char* rest = test;
+        char* rest = instruction;
         split_count = 0;
         while((token = strtok_r(rest, " ", &rest))){
             if(split_count > 0){
@@ -506,19 +564,22 @@ void assembly_to_machine(FILE *fp, struct instruction_memory *instruct){
             }
             split_count++;
         }
+        for(a =0; a < 7; a++){
+            printf("%d",opcode[a]);
+        }
+        printf("\n");
+
         convert_to_binary_arr(5, atoi(uj_type_split[0]),rd);
         modify_bits(instruction_template,7, 11, rd);
             
-        convert_to_binary_arr(5, atoi(uj_type_split[2]), rs2);
+        convert_to_binary_arr(19, atoi(uj_type_split[1]), imm_uj);
         modify_bits(instruction_template, 12, 31, imm_uj);
-
+        not_decoded = 0;
     }
-    not_decoded = 0;
     }
     /* Based on what type it is, parse the remaining information*/
     /* Assign the remaining information to the value*/
     /* Store the instruction into the structure*/
-    
     instruct->instructions_array[num_instructs] = instruction_template;
     num_instructs++;
     }

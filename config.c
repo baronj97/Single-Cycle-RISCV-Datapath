@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include "config.h"
 #define BUFFER_SIZE 100
 
 void init_config(struct core* cores){
