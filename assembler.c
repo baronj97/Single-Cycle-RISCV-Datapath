@@ -580,9 +580,14 @@ void assembly_to_machine(FILE *fp, struct instruction_memory *instruct){
     /* Based on what type it is, parse the remaining information*/
     /* Assign the remaining information to the value*/
     /* Store the instruction into the structure*/
-    instruct->instructions_array[num_instructs] = instruction_template;
+    
+    int z;
+    for(z =0; z < 32; z++){
+        instruct->instructions_array[num_instructs][z] = instruction_template[z];
+    }
     num_instructs++;
     }
+    
     instruct->num_instructions = num_instructs;
 
 }

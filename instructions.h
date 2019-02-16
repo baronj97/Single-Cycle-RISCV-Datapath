@@ -3,7 +3,7 @@
 
 struct instruction_memory{
 	int num_instructions;
-	int *instructions_array[256];
+	int instructions_array[256][32];
 
 };
 

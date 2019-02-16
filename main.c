@@ -31,6 +31,7 @@ int main(int argc, char** argv){
     	//init_instruction_memory(ifp, &instructions);
 	assembly_to_machine(ifp, &instructions);
 
+
 	// Close the file
 	fclose(ifp);
 
@@ -52,7 +53,7 @@ int main(int argc, char** argv){
 	for(pc = 0; pc < instructions.num_instructions;pc++){
 		int instruct[32];
 		instruction_fetch(&instructions, pc, instruct);
-		print_instruction(instruct);
+        print_instruction(instruct);
         /*Decode the instruction*/
 		struct decode_info decoded_instruction;
         decode_instruction(instruct, &decoded_instruction, &registers);
