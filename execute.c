@@ -17,7 +17,7 @@
  * 			
  */	
 
-int execute(struct decode_info *decode){
+int execute(struct decode_info *decode, int pc){
 	/* R-type */
 	if(decode->r_type.valid){
 		switch(decode->r_type.r_funct3){
@@ -118,25 +118,31 @@ int execute(struct decode_info *decode){
 			case 0b000:
 				/*BEQ*/
 				if (decode->sb_type.sb_source_reg_1 == decode->sb_type.sb_source_reg_2) {
-					/* PC-PC+(imm_12'b0) */		
+					pc = (decode->sb_type.sb_imm_1 << 4) | decode->sb_type.sb_imm_2;
 				}
 			   	break;
 			case 0b001:
 				/*BNE*/
 				if (decode->sb_type.sb_source_reg_1 != decode->sb_type.sb_source_reg_2) {
 					/* PC - PC + (imm, 1b'0) */
+                    pc = (decode->sb_type.sb_imm_1 << 4) | decode->sb_type.sb_imm_2;
+
 				}
 				break;
 			case 0b100:
 				/*BLT*/
 				if (decode->sb_type.sb_source_reg_1 < decode->sb_type.sb_source_reg_2) {
 					/* PC - PC + (imm, 1b'0) */
+                    pc = (decode->sb_type.sb_imm_1 << 4) | decode->sb_type.sb_imm_2;
+
 				}
 				break;
 			case 0b101:
 				/*BGE*/
 				if (decode->sb_type.sb_source_reg_1 >= decode->sb_type.sb_source_reg_2) {
 					/* PC - PC + (imm, 1b'0) */
+                    pc = (decode->sb_type.sb_imm_1 << 4) | decode->sb_type.sb_imm_2;
+
 				}
 				break;
 			default: 
