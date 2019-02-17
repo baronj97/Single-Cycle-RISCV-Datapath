@@ -40,8 +40,7 @@ void print_registers(struct register_data* registers){
 	for(i = 0; i < registers->num_registers; i++){
 		printf("reg%d = %d\n",i, registers->registers_data[i]);
 	}
-
-
+	
 }
 
 void init_register_data(struct register_data* registers){
@@ -50,5 +49,5 @@ void init_register_data(struct register_data* registers){
 	for(i = 0; i < registers->num_registers; i++){
 		registers->registers_data[i] = -1;
 	}
-
+	registers->registers_data[0] = 0;
 }

@@ -65,13 +65,15 @@ int main(int argc, char** argv){
 			memory(&decoded_instruction, &mem, &registers);
 		/*Go to writeback stage*/
 		writeback(&decoded_instruction, &registers);
-        if(branch > 0){
+        
+	// Debug
+		
+	if(branch > 0){
             pc = branch - 1;
         }  
         //printf("%d\n", decoded_instruction.i_type.i_i);
         print_data(&mem);
         print_registers(&registers);
-
 
 	}
 	

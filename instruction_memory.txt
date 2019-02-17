@@ -1,6 +1,8 @@
 ld x1, x0(00)
 ld x2, x1(00)
-or x4, x1, x2
-ld x3, x1(01)
-and x5, x3, x2
-sd x5, x1(01)
+ori x10, x1, 10
+andi x11, x1, 15
+xori x12, x1, 10
+ori x13, x2, 100
+andi x14, x2, 3
+xori x15, x2, 10
