@@ -71,6 +71,9 @@ int execute(struct decode_info *decode, int pc){
 				} else {
 					/*JALR*/
 				        // NOT DONE!	
+                    decode->i_type.i_dest_reg_value = pc;               
+                    pc  = decode->i_type.i_source_reg + decode->i_type.i_imm;
+                    return pc;   
 					break;		
 				}
 				break;
@@ -100,64 +103,82 @@ int execute(struct decode_info *decode, int pc){
 				break;
 			default:
 				printf("This type of operation is not supported");
-		return -1;
 		}
+        return -1;
 	} /* S-type */
 	else if (decode->s_type.valid){
 		switch(decode->s_type.s_funct3){
 			case 0b011:
 				/*SD*/
-				
+			    decode->s_type.s_imm_full = (decode->s_type.s_imm_1 << 4) | decode->s_type.s_imm_2;
                 break;
 			default:
 				printf("This type of operation is not supported");
 		}	
+        return -1;
 	} /* SB-type */ 
 	else if (decode->sb_type.valid){
 		switch(decode->sb_type.sb_funct3){
 			case 0b000:
 				/*BEQ*/
-				if (decode->sb_type.sb_source_reg_1 == decode->sb_type.sb_source_reg_2) {
-					pc = (decode->sb_type.sb_imm_1 << 4) | decode->sb_type.sb_imm_2;
+				if (decode->sb_type.sb_source_reg_1_value == decode->sb_type.sb_source_reg_2_value) {
+				    int result = (decode->sb_type.sb_imm_1 << 4) | decode->sb_type.sb_imm_2;
+
+                    	pc = (decode->sb_type.sb_imm_1 << 4) | decode->sb_type.sb_imm_2;
 				}
+                else{
+                    pc = -1;
+                }
 			   	break;
 			case 0b001:
 				/*BNE*/
-				if (decode->sb_type.sb_source_reg_1 != decode->sb_type.sb_source_reg_2) {
+				if (decode->sb_type.sb_source_reg_1_value != decode->sb_type.sb_source_reg_2_value) {
 					/* PC - PC + (imm, 1b'0) */
-                    pc = (decode->sb_type.sb_imm_1 << 4) | decode->sb_type.sb_imm_2;
-
+                        pc = (decode->sb_type.sb_imm_1 << 4) | decode->sb_type.sb_imm_2;
+                        printf("bne\n");
 				}
+                else{
+                    pc = -1;
+                }
 				break;
 			case 0b100:
 				/*BLT*/
-				if (decode->sb_type.sb_source_reg_1 < decode->sb_type.sb_source_reg_2) {
+				if (decode->sb_type.sb_source_reg_1_value < decode->sb_type.sb_source_reg_2_value) {
 					/* PC - PC + (imm, 1b'0) */
                     pc = (decode->sb_type.sb_imm_1 << 4) | decode->sb_type.sb_imm_2;
 
 				}
+                else{
+                    pc = -1;
+                }
 				break;
 			case 0b101:
 				/*BGE*/
-				if (decode->sb_type.sb_source_reg_1 >= decode->sb_type.sb_source_reg_2) {
+				if (decode->sb_type.sb_source_reg_1_value >= decode->sb_type.sb_source_reg_2_value) {
 					/* PC - PC + (imm, 1b'0) */
                     pc = (decode->sb_type.sb_imm_1 << 4) | decode->sb_type.sb_imm_2;
 
 				}
+                else{
+                    pc = -1;
+                }
 				break;
 			default: 
 				printf("This type of operation is not supported");
 		} 
+        return pc;
 	} /* UJ-type */
 	else if (decode->uj_type.valid){
 		switch(decode->uj_type.opcode){
-			case 0b1101111:
+			case 0b0101111:
 				/*JAL*/
 				/*decode->uj_type.uj_dest_reg_value = PC + 4; PC - PC + (imm,1b'0)*/
+                decode->uj_type.uj_dest_reg_value = pc;               
+                pc =decode->uj_type.uj_imm;
 				break;
 			default:
-				printf("This type of operation is not supported\n");
+				printf("This type of operation is not supported in exec\n");
 		}
+        return pc;
 	} 
-	return -1;
 }
