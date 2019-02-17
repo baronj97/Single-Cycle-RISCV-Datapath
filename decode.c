@@ -16,7 +16,6 @@ void decode_instruction(int* instruction, struct decode_info *decode, struct reg
 	struct s_type_info s_type_data;
 	struct sb_type_info sb_type_data;
 	struct uj_type_info uj_type_data;
-
 	switch(opcode){
 		// R-type (add sub sll srl xor or and)
 		case 0b0110011:
@@ -53,8 +52,6 @@ void decode_instruction(int* instruction, struct decode_info *decode, struct reg
 			r_type_data.r_source_reg_1_value = registers->registers_data[r_source_reg_1];
 			r_type_data.r_source_reg_2_value = registers->registers_data[r_source_reg_2];
 			decode->r_type = r_type_data;
-            printf("%d\n", r_type_data.r_source_reg_1_value);
-			printf("%d\n", r_type_data.r_source_reg_2);
 
             i_type_data.valid = 0;
 			s_type_data.valid = 0;
@@ -100,10 +97,6 @@ void decode_instruction(int* instruction, struct decode_info *decode, struct reg
 			i_type_data.i_source_reg_value = registers->registers_data[i_source_reg];
 			decode->i_type = i_type_data;
                 
-            printf("dest_reg: %d\n", i_dest_reg);
-            printf("source_reg: %d\n", i_source_reg);
-
-            printf("imm: %d\n", i_imm);
 
 			r_type_data.valid = 0;
 			s_type_data.valid = 0;
@@ -122,7 +115,7 @@ void decode_instruction(int* instruction, struct decode_info *decode, struct reg
 			int s_imm_1_arr[5];
 			get_bits(instruction, 7, 11, s_imm_1_arr);
 			unsigned int s_imm_1 = convert_arr_to_decimal(s_imm_1_arr, 5);
-		       
+		    
 			int s_funct3_arr[3];
 			get_bits(instruction, 12, 14, s_funct3_arr);
 			unsigned int s_funct3 = convert_arr_to_decimal(s_funct3_arr, 3);
@@ -138,18 +131,17 @@ void decode_instruction(int* instruction, struct decode_info *decode, struct reg
 			int s_imm_2_arr[7];
 			get_bits(instruction, 25, 31, s_imm_2_arr);
 			unsigned int s_imm_2 = convert_arr_to_decimal(s_imm_2_arr, 7);
-		
-			s_type_data.valid = 1;
+			
+            s_type_data.valid = 1;
 			s_type_data.opcode = opcode;
 			s_type_data.s_imm_1 = s_imm_1;
 			s_type_data.s_funct3 = s_funct3;
 			s_type_data.s_source_reg_1 = s_source_reg_1;
 			s_type_data.s_source_reg_2 = s_source_reg_2;
 			s_type_data.s_imm_2 = s_imm_2;
-
 			/*Read the value of the source reg here*/
-			s_type_data.s_source_reg_1_value = registers->registers_data[s_source_reg_1];
-			s_type_data.s_source_reg_2_value = registers->registers_data[s_source_reg_2];
+			//s_type_data.s_source_reg_1_value = registers->registers_data[s_source_reg_1];
+			//s_type_data.s_source_reg_2_value = registers->registers_data[s_source_reg_2];
 			decode->s_type = s_type_data;
 
 			r_type_data.valid = 0;
@@ -186,6 +178,7 @@ void decode_instruction(int* instruction, struct decode_info *decode, struct reg
 			get_bits(instruction, 25, 31, sb_imm_2_arr);
 			unsigned int sb_imm_2 = convert_arr_to_decimal(sb_imm_2_arr, 7);
 			
+
 			sb_type_data.valid = 1;
 			sb_type_data.opcode = opcode;
 			sb_type_data.sb_imm_1 = sb_imm_1;
@@ -199,7 +192,7 @@ void decode_instruction(int* instruction, struct decode_info *decode, struct reg
 			sb_type_data.sb_source_reg_2_value = registers->registers_data[sb_source_reg_2];
 			decode->sb_type = sb_type_data;
 
-			r_type_data.valid = 0;
+            r_type_data.valid = 0;
 			i_type_data.valid = 0;
 			s_type_data.valid = 0;
 			uj_type_data.valid = 0;
@@ -211,21 +204,21 @@ void decode_instruction(int* instruction, struct decode_info *decode, struct reg
 			
 			break;
 		// UJ-type (jal)
-		case 111:
+		case 0b0101111:
 			;
             int uj_dest_reg_arr[5];
 			get_bits(instruction, 7, 11, uj_dest_reg_arr);
 			unsigned int uj_dest_reg = convert_arr_to_decimal(uj_dest_reg_arr, 5);
 		    
-			int uj_imm_arr[19];
+			int uj_imm_arr[20];
 			get_bits(instruction, 12, 31, uj_imm_arr);
-			unsigned int uj_imm = convert_arr_to_decimal(uj_imm_arr, 3);
+			unsigned int uj_imm = convert_arr_to_decimal(uj_imm_arr, 20);
 			
 			uj_type_data.valid = 1;
 			uj_type_data.opcode = opcode;
 			uj_type_data.uj_dest_reg = uj_dest_reg;
 			uj_type_data.uj_imm = uj_imm;
-
+            printf("The uj imm frrom decode is %d\n", uj_imm);
 			decode->uj_type = uj_type_data;
 
 			r_type_data.valid = 0;

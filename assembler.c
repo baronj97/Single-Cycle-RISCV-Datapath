@@ -92,7 +92,7 @@ void assembly_to_machine(FILE *fp, struct instruction_memory *instruct){
     int rs1[5];
     int rs2[5];
     int imm_i[12];
-    int imm_uj[19];
+    int imm_uj[20];
     int imm_s[12];
     int imm_sb[12];
     int i;
@@ -239,10 +239,44 @@ void assembly_to_machine(FILE *fp, struct instruction_memory *instruct){
 
             }
             else if(!(strcmp(i_types[i], "jalr"))){
-                convert_to_binary_arr(7, 103, opcode);
-                //instruction_template = modify_bits(instruction_template, 0, 7, opcode);
-                modify_bits(instruction_template, 0, 6, opcode);
+                char* new_token;
+                char* new_rest = backup;
+                split_count = 0;
 
+                char end[3];
+                strncpy(end, &backup[strlen(backup)-3], 2);
+                end[2] = '\0';
+                strcpy(i_type_split[2], end);
+                while((new_token = strtok_r(new_rest, " ", &new_rest))){
+                    if(split_count == 1){
+                    char *temp = new_token;
+                    temp++;
+                    temp[strlen(temp) -1 ] = 0;
+                    strcpy(i_type_split[0], temp);
+                }
+                if(split_count == 2){
+                    char *temp2 = strtok_r(new_token, "(", &token);
+                    temp2++;
+                    strcpy(i_type_split[1], temp2);
+                }   
+
+                 split_count++;
+             }
+                printf("%d\n", atoi(i_type_split[0]));
+
+                convert_to_binary_arr(5, atoi(i_type_split[0]),rd);
+                modify_bits(instruction_template,7, 11, rd);
+        
+                convert_to_binary_arr(5, atoi(i_type_split[1]), rs1);
+                modify_bits(instruction_template, 15, 19, rs1);
+                
+                convert_to_binary_arr(12, atoi(i_type_split[2]), imm_i);
+                modify_bits(instruction_template, 20, 31, imm_i);
+
+                
+                convert_to_binary_arr(7, 103, opcode);
+                modify_bits(instruction_template, 0, 6, opcode);
+                
                 convert_to_binary_arr(3,0, funct3);
                 modify_bits(instruction_template, 12, 14, funct3);
 
@@ -274,7 +308,8 @@ void assembly_to_machine(FILE *fp, struct instruction_memory *instruct){
                 char *temp2 = strtok_r(token, "(", &token);
                 token++;
                 token[strlen(token) -1 ] = 0;
-                
+                temp2++;
+                printf("temp2: %s\n", temp2); 
                 strcpy(s_type_split[1], token);
                 strcpy(s_type_split[2], temp2);
             }
@@ -316,13 +351,10 @@ void assembly_to_machine(FILE *fp, struct instruction_memory *instruct){
     strcpy(r_types[1], "sub");
     strcpy(r_types[2], "sll");
     strcpy(r_types[3], "srl");
-    strcpy(r_types[4], "xor");
+    strcpy(r_types[4], "XOR");
     strcpy(r_types[5], "or");
     strcpy(r_types[6], "and");
     
-    // Used to prevent 'or' from running twice
-    int internal_count = 0;
-
     for(i = 0; i< 7; i++){
         if(strstr(instruction, r_types[i]) != NULL){
             /* Deal with R-types from here*/
@@ -333,7 +365,7 @@ void assembly_to_machine(FILE *fp, struct instruction_memory *instruct){
             char* token;
             char* rest = instruction;
             split_count = 0;
-	    while((token = strtok_r(rest, " ", &rest))){
+            while((token = strtok_r(rest, " ", &rest))){
                 if(split_count > 0){
                     char* temp = token;
                     if(split_count < 3){
@@ -387,23 +419,24 @@ void assembly_to_machine(FILE *fp, struct instruction_memory *instruct){
                 modify_bits(instruction_template, 25, 31, funct7);
 
             }
-            else if(!(strcmp(r_types[i], "or")) && (internal_count == 0)){
-		printf("Running or dsadsadsadsadsd\n");
-		convert_to_binary_arr(3,6, funct3);
+            else if(!(strcmp(r_types[i], "or"))){
+                printf("Or\n");
+                convert_to_binary_arr(3,6, funct3);
                 modify_bits(instruction_template, 12, 14, funct3);
 
                 convert_to_binary_arr(7, 0, funct7);
                 modify_bits(instruction_template, 25, 31, funct7);
-	    }
-	    else if(!(strcmp(r_types[i], "xor"))){
-                printf("Running xor dsadsadsadsadsad\n");
-		convert_to_binary_arr(3,4, funct3);
-               	modify_bits(instruction_template, 12, 14, funct3);
-                
-               	convert_to_binary_arr(7, 0, funct7);
-               	modify_bits(instruction_template, 25, 31, funct7);
-	    }
+            }
 
+            else if(!(strcmp(r_types[i], "XOR"))){
+                printf("xor\n");
+                convert_to_binary_arr(3,4, funct3);
+                modify_bits(instruction_template, 12, 14, funct3);
+                
+                convert_to_binary_arr(7, 0, funct7);
+                modify_bits(instruction_template, 25, 31, funct7);
+
+            }
             else if(!(strcmp(r_types[i], "and"))){
                 convert_to_binary_arr(3,7, funct3);
                 modify_bits(instruction_template, 12, 14, funct3);
@@ -412,7 +445,6 @@ void assembly_to_machine(FILE *fp, struct instruction_memory *instruct){
                 modify_bits(instruction_template, 25, 31, funct7);
 
             }
-	    internal_count++;
             not_decoded = 0;
         }
     }
@@ -447,11 +479,10 @@ void assembly_to_machine(FILE *fp, struct instruction_memory *instruct){
                 split_count++;
             }
             convert_to_binary_arr(5, atoi(sb_type_split[0]),rs1);
-            modify_bits(instruction_template,7, 11, rs1);
+            modify_bits(instruction_template,15, 19, rs1);
             
             convert_to_binary_arr(5, atoi(sb_type_split[1]), rs2);
-            modify_bits(instruction_template, 15, 19, rs2);
-
+            modify_bits(instruction_template, 20, 24, rs2);
             convert_to_binary_arr(12, atoi(sb_type_split[2]), imm_sb);
             int temp1[5];
             temp1[4] = imm_sb[11];
@@ -521,11 +552,11 @@ void assembly_to_machine(FILE *fp, struct instruction_memory *instruct){
             }
             split_count++;
         }
-
+        printf("The imm is %s\n", uj_type_split[1]);
         convert_to_binary_arr(5, atoi(uj_type_split[0]),rd);
         modify_bits(instruction_template,7, 11, rd);
             
-        convert_to_binary_arr(19, atoi(uj_type_split[1]), imm_uj);
+        convert_to_binary_arr(20, atoi(uj_type_split[1]), imm_uj);
         modify_bits(instruction_template, 12, 31, imm_uj);
         not_decoded = 0;
     }

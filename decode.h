@@ -38,6 +38,7 @@ struct s_type_info{
 
 	unsigned int s_source_reg_1_value;
 	unsigned int s_source_reg_2_value;
+    unsigned int s_imm_full;
 };
 
 struct sb_type_info{
