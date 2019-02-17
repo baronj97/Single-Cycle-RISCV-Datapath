@@ -94,28 +94,34 @@ int main(int argc, char** argv){
 	    // Iterate over each instruction while incrementing the pc
 	    // Decode the instructions in the loop as well
 	for(pc = 0; pc < core_instructs.num_instructions;pc++){
-		printf("The PC is: %d\n", pc);
-        int instruct[32];
+		printf("The PC is: %d\n", (pc+1));
+        	int instruct[32];
 		instruction_fetch(&core_instructs, pc, instruct);
- //       print_instruction(instruct);
-        /*Decode the instruction*/
+ 		// print_instruction(instruct);
+        	
+		/*Decode the instruction*/
 		struct decode_info decoded_instruction;
-        decode_instruction(instruct, &decoded_instruction, &registers);
+        	decode_instruction(instruct, &decoded_instruction, &registers);
+		
 		/*Execute the instruction*/
 		branch = execute(&decoded_instruction, pc);
+		
 		/*If the instruction is i type, feed it to the mem stage*/
 		if(decoded_instruction.i_type.valid || decoded_instruction.s_type.valid || decoded_instruction.uj_type.valid)
 			memory(&decoded_instruction, &mem, &registers);
 		/*Go to writeback stage*/
 		writeback(&decoded_instruction, &registers);
+	
+	printf("[MAIN] PC after execute: %d\n", pc);
+
         if(branch > 0){
             pc = branch - 1;
+	    printf("PC is set to %d\n", pc);
             branch = -1;
-            printf("PC is now set to %d\n", pc);
             printf("This stops when PC = %d\n", core_instructs.num_instructions);
         }  
         //printf("%d\n", decoded_instruction.i_type.i_i);
-       // print_data(&mem);
+       	// print_data(&mem);
         print_registers(&registers);
 	}
         t = clock() - t;
@@ -126,8 +132,8 @@ int main(int argc, char** argv){
 	// This is all testing... will need to move into the for-loop
 	// Declare a decode struct and decode the instruction
 	fclose(dfp);
-    //time_taken = time_taken * (1 / freq);
-    printf("Time elapsed is: %.3fns\n", (time_taken / CLOCKS_PER_SEC) * 1000000000);
+    	//time_taken = time_taken * (1 / freq);
+    	printf("Time elapsed is: %.3fns\n", (time_taken / CLOCKS_PER_SEC) * 1000000000);
 
 	return 0;
 }

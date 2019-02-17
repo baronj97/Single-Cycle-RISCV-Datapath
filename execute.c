@@ -106,7 +106,7 @@ int execute(struct decode_info *decode, int pc){
 			default:
 				printf("This type of operation is not supported");
 		}
-        return -1;
+return -1;
 	} /* S-type */
 	else if (decode->s_type.valid){
 		switch(decode->s_type.s_funct3){
@@ -124,47 +124,39 @@ int execute(struct decode_info *decode, int pc){
 			case 0b000:
 				/*BEQ*/
 				if (decode->sb_type.sb_source_reg_1_value == decode->sb_type.sb_source_reg_2_value) {
-				    int result = (decode->sb_type.sb_imm_1 << 4) | decode->sb_type.sb_imm_2;
-
-                    	pc = (decode->sb_type.sb_imm_1 << 4) | decode->sb_type.sb_imm_2;
-                        printf("PC is now %d\n", pc);
+				    	int result = (decode->sb_type.sb_imm_1 << 4) | decode->sb_type.sb_imm_2;
+                    			pc = (decode->sb_type.sb_imm_1 << 4) | (decode->sb_type.sb_imm_2) - 1;
 				}
-                else{
-                    pc = -1;
-                }
+                		else {
+                    			pc = -1;
+                		}
 			   	break;
 			case 0b001:
 				/*BNE*/
 				if (decode->sb_type.sb_source_reg_1_value != decode->sb_type.sb_source_reg_2_value) {
-					/* PC - PC + (imm, 1b'0) */
-                        pc = (decode->sb_type.sb_imm_1 << 4) | decode->sb_type.sb_imm_2;
-                        printf("bne\n");
+                        		pc = (decode->sb_type.sb_imm_1 << 4) | (decode->sb_type.sb_imm_2) - 1;
 				}
-                else{
-                    pc = -1;
-                }
+                		else{
+                    			pc = -1;
+               		 	}
 				break;
 			case 0b100:
 				/*BLT*/
 				if (decode->sb_type.sb_source_reg_1_value < decode->sb_type.sb_source_reg_2_value) {
-					/* PC - PC + (imm, 1b'0) */
-                    pc = (decode->sb_type.sb_imm_1 << 4) | decode->sb_type.sb_imm_2;
-
+                    			pc = (decode->sb_type.sb_imm_1 << 4) | (decode->sb_type.sb_imm_2) - 1;
 				}
-                else{
-                    pc = -1;
-                }
+                		else{
+                    			pc = -1;
+                		}
 				break;
 			case 0b101:
 				/*BGE*/
 				if (decode->sb_type.sb_source_reg_1_value >= decode->sb_type.sb_source_reg_2_value) {
-					/* PC - PC + (imm, 1b'0) */
-                    pc = (decode->sb_type.sb_imm_1 << 4) | decode->sb_type.sb_imm_2;
-
+                    			pc = (decode->sb_type.sb_imm_1 << 4) | (decode->sb_type.sb_imm_2) - 1;
 				}
-                else{
-                    pc = -1;
-                }
+                		else{
+                    			pc = -1;
+                		}
 				break;
 			default: 
 				printf("This type of operation is not supported");
@@ -176,8 +168,12 @@ int execute(struct decode_info *decode, int pc){
 			case 0b0101111:
 				/*JAL*/
 				/*decode->uj_type.uj_dest_reg_value = PC + 4; PC - PC + (imm,1b'0)*/
-                decode->uj_type.uj_dest_reg_value = pc;               
-                pc =decode->uj_type.uj_imm;
+                		//decode->uj_type.uj_dest_reg_value = pc;               
+				decode->uj_type.uj_dest_reg_value = pc;
+				pc = (decode->uj_type.uj_imm);
+
+				printf("[UJ TYPE] PC: %d\n", pc);
+				printf("Dest value of UJ: %d\n", decode->uj_type.uj_dest_reg_value);
 				break;
 			default:
 				printf("This type of operation is not supported in exec\n");
