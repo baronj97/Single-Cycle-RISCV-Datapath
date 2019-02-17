@@ -1,2 +1,6 @@
-ld x1, x0(0)
-addi x5, x1, 10
+ld x1, x0(00)
+ld x2, x1(00)
+or x4, x1, x2
+ld x3, x1(01)
+and x5, x3, x2
+sd x5, x1(01)

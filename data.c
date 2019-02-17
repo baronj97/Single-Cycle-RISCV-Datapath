@@ -34,6 +34,16 @@ void init_data_memory(FILE *dfp, struct data_memory *mem){
 	mem->num_data = i;
 }
 
+void print_registers(struct register_data* registers){
+    int i;
+	registers->num_registers = 32;
+	for(i = 0; i < registers->num_registers; i++){
+		printf("reg%d = %d\n",i, registers->registers_data[i]);
+	}
+
+
+}
+
 void init_register_data(struct register_data* registers){
 	int i;
 	registers->num_registers = 32;
