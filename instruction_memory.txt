@@ -1,3 +1,2 @@
 ld x1, x0(0)
-ld x2, x1(0)
-add x3, x1, x2
+addi x5, x1, 10

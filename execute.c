@@ -26,7 +26,7 @@ int execute(struct decode_info *decode, int pc){
 					/*ADD*/
 					decode->r_type.r_dest_reg_value = decode->r_type.r_source_reg_1_value + decode->r_type.r_source_reg_2_value;
 					break;
-				} else {
+				} else if ((decode->r_type.r_funct7) == 0b0100000) {
 					/*SUB*/
 					decode->r_type.r_dest_reg_value = decode->r_type.r_source_reg_1_value - decode->r_type.r_source_reg_2_value;
 					break;
@@ -34,11 +34,11 @@ int execute(struct decode_info *decode, int pc){
 				break;
 			case 0b001:
 				/*SLL* Shift Left logical*/
-				decode->r_type.r_dest_reg_value = decode->r_type.r_source_reg_1_value << decode->r_type.r_source_reg_2_value;
+				decode->r_type.r_dest_reg_value = decode->r_type.r_source_reg_2_value << decode->r_type.r_source_reg_1_value;
 				break;
 			case 0b101:
 				/*SRL* Shift Right Logical*/
-				decode->r_type.r_dest_reg_value = decode->r_type.r_source_reg_1_value >> decode->r_type.r_source_reg_2_value;
+				decode->r_type.r_dest_reg_value = decode->r_type.r_source_reg_2_value >> decode->r_type.r_source_reg_1_value;
 				break;
 			case 0b100:
 				/*XOR*/
@@ -159,7 +159,6 @@ int execute(struct decode_info *decode, int pc){
 				printf("This type of operation is not supported\n");
 		}
 	} 
-	else 
 	/*If we get here, something went really wrong*/
 	return -1;
 }

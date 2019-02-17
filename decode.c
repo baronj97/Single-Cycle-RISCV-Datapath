@@ -21,7 +21,7 @@ void decode_instruction(int* instruction, struct decode_info *decode, struct reg
 		// R-type (add sub sll srl xor or and)
 		case 0b0110011:
 			;
-            int r_dest_reg_arr[5];
+            		int r_dest_reg_arr[5];
 			get_bits(instruction, 7, 11, r_dest_reg_arr);
 			unsigned int r_dest_reg = convert_arr_to_decimal(r_dest_reg_arr, 5);
 		       
@@ -54,6 +54,14 @@ void decode_instruction(int* instruction, struct decode_info *decode, struct reg
 			r_type_data.r_source_reg_2_value = registers->registers_data[r_source_reg_2];
 			decode->r_type = r_type_data;
 
+			//Debug
+			printf("[DECODE] R_Opcode: %d\n", opcode);
+			printf("[DECODE] R_Dest_Reg: %d\n", r_dest_reg);
+			printf("[DECODE] R_Funct3: %d\n", r_funct3);
+			printf("[DECODE] R_SourceReg1: %d\n", r_source_reg_1);
+			printf("[DECODE] R_SourceReg2: %d\n", r_source_reg_2);
+			printf("[DECODE] R_Funct7: %d\n", r_funct7);
+			
 			i_type_data.valid = 0;
 			s_type_data.valid = 0;
 			sb_type_data.valid = 0;
@@ -95,14 +103,17 @@ void decode_instruction(int* instruction, struct decode_info *decode, struct reg
 			i_type_data.i_imm = i_imm;
 
 			/*Read the value of the source reg here*/
+			// Maybe wrong
 			i_type_data.i_source_reg_value = registers->registers_data[i_source_reg];
 			decode->i_type = i_type_data;
                 
-            printf("dest_reg: %d\n", i_dest_reg);
-            printf("source_reg: %d\n", i_source_reg);
-
-            printf("imm: %d\n", i_imm);
-
+			//Debug
+			printf("[DECODE] I_Opcode: %d\n", opcode);
+			printf("[DECODE] I_Dest_Reg: %d\n", i_dest_reg);
+			printf("[DECODE] I_Funct3: %d\n", i_funct3);
+			printf("[DECODE] I_Source_Reg: %d\n", i_source_reg);
+			printf("[DECODE] I_Imm: %d\n", i_imm);
+			
 			r_type_data.valid = 0;
 			s_type_data.valid = 0;
 			sb_type_data.valid = 0;

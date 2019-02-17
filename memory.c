@@ -16,13 +16,11 @@ void memory(struct decode_info* decode, struct data_memory* data_mem, struct reg
         int offset = decode->i_type.i_source_reg + decode->i_type.i_imm;
         printf("offset%d\n", offset);
         int reg_dest = decode->i_type.i_dest_reg - 1;
-
 		reg_data->registers_data[reg_dest]= data_mem->data[offset];
 	}
     else if(decode->s_type.valid && decode->s_type.opcode == 0b0100011){
         int offset = decode->s_type.s_source_reg_1 + decode->s_type.s_source_reg_2;
         int reg_dest = decode->s_type.s_source_reg_1 - 1;
-
 		reg_data->registers_data[reg_dest]= data_mem->data[offset];
 
     }
