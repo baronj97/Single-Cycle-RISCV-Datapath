@@ -26,7 +26,7 @@ int execute(struct decode_info *decode, int pc){
 					/*ADD*/
 					decode->r_type.r_dest_reg_value = decode->r_type.r_source_reg_1_value + decode->r_type.r_source_reg_2_value;
 					break;
-				} else if ((decode->r_type.r_funct7) == 0b0100000) {
+				} else {
 					/*SUB*/
 					decode->r_type.r_dest_reg_value = decode->r_type.r_source_reg_1_value - decode->r_type.r_source_reg_2_value;
 					break;
@@ -34,11 +34,11 @@ int execute(struct decode_info *decode, int pc){
 				break;
 			case 0b001:
 				/*SLL* Shift Left logical*/
-				decode->r_type.r_dest_reg_value = decode->r_type.r_source_reg_2_value << decode->r_type.r_source_reg_1_value;
+				decode->r_type.r_dest_reg_value = decode->r_type.r_source_reg_1_value << decode->r_type.r_source_reg_2_value;
 				break;
 			case 0b101:
 				/*SRL* Shift Right Logical*/
-				decode->r_type.r_dest_reg_value = decode->r_type.r_source_reg_2_value >> decode->r_type.r_source_reg_1_value;
+				decode->r_type.r_dest_reg_value = decode->r_type.r_source_reg_1_value >> decode->r_type.r_source_reg_2_value;
 				break;
 			case 0b100:
 				/*XOR*/
@@ -66,7 +66,7 @@ int execute(struct decode_info *decode, int pc){
 			case 0b000:
 				if ((decode->i_type.opcode) == 0b0010011){
 					/*ADDI*/
-					decode->i_type.i_dest_reg_value = decode->i_type.i_source_reg + decode->i_type.i_imm;
+					decode->i_type.i_dest_reg_value = decode->i_type.i_source_reg_value + decode->i_type.i_imm;
 					break;
 				} else {
 					/*JALR*/
@@ -76,23 +76,23 @@ int execute(struct decode_info *decode, int pc){
 				break;
 			case 0b001:
 				/*SLLI*/
-				decode->i_type.i_dest_reg_value = decode->i_type.i_source_reg << decode->i_type.i_imm;
+				decode->i_type.i_dest_reg_value = decode->i_type.i_source_reg_value << decode->i_type.i_imm;
 				break;
 			case 0b100:
 				/*XORI*/
-				decode->i_type.i_dest_reg_value = decode->i_type.i_source_reg ^ decode->i_type.i_imm;
+				decode->i_type.i_dest_reg_value = decode->i_type.i_source_reg_value ^ decode->i_type.i_imm;
 				break;
 			case 0b101:
 				/*SLRI*/
-				decode->i_type.i_dest_reg_value = decode->i_type.i_source_reg >> decode->i_type.i_imm;
+				decode->i_type.i_dest_reg_value = decode->i_type.i_source_reg_value >> decode->i_type.i_imm;
 				break;
 			case 0b110:
 				/*ORI*/
-				decode->i_type.i_dest_reg_value = decode->i_type.i_source_reg | decode->i_type.i_imm;
+				decode->i_type.i_dest_reg_value = decode->i_type.i_source_reg_value | decode->i_type.i_imm;
 				break;
 			case 0b111:
 				/*ANDI*/
-				decode->i_type.i_dest_reg_value = decode->i_type.i_source_reg & decode->i_type.i_imm;
+				decode->i_type.i_dest_reg_value = decode->i_type.i_source_reg_value & decode->i_type.i_imm;
 				break;
 			case 0b011:
 				/*Load*/
@@ -100,15 +100,15 @@ int execute(struct decode_info *decode, int pc){
 				break;
 			default:
 				printf("This type of operation is not supported");
-		return offset;
+		return -1;
 		}
 	} /* S-type */
 	else if (decode->s_type.valid){
 		switch(decode->s_type.s_funct3){
 			case 0b011:
 				/*SD*/
-				// NOT DONE!
-				break;
+				
+                break;
 			default:
 				printf("This type of operation is not supported");
 		}	
@@ -159,6 +159,5 @@ int execute(struct decode_info *decode, int pc){
 				printf("This type of operation is not supported\n");
 		}
 	} 
-	/*If we get here, something went really wrong*/
 	return -1;
 }

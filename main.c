@@ -51,34 +51,28 @@ int main(int argc, char** argv){
 	// Iterate over each instruction while incrementing the pc
 	// Decode the instructions in the loop as well
 	for(pc = 0; pc < instructions.num_instructions;pc++){
-		printf("[MAIN] Instruction: %d\n", pc);
-
-
-		int instruct[32];
+		printf("The PC is: %d\n", pc);
+        int instruct[32];
 		instruction_fetch(&instructions, pc, instruct);
- 		//print_instruction(instruct);
-        	
-		/*Decode the instruction*/
+ //       print_instruction(instruct);
+        /*Decode the instruction*/
 		struct decode_info decoded_instruction;
-        	decode_instruction(instruct, &decoded_instruction, &registers);
+        decode_instruction(instruct, &decoded_instruction, &registers);
 		/*Execute the instruction*/
 		branch = execute(&decoded_instruction, pc);
 		/*If the instruction is i type, feed it to the mem stage*/
 		if(decoded_instruction.i_type.valid)
-		memory(&decoded_instruction, &mem, &registers);
+			memory(&decoded_instruction, &mem, &registers);
 		/*Go to writeback stage*/
 		writeback(&decoded_instruction, &registers);
-        	
-		// DEBUG
-        	printf("[MAIN] R Dest Reg Value: %d\n", decoded_instruction.r_type.r_dest_reg_value);
-       		printf("[MAIN] I Dest Reg Value: %d\n", decoded_instruction.i_type.i_dest_reg_value);	
-	        printf("[MAIN] R Source Reg 1 Value: %d\n", decoded_instruction.r_type.r_source_reg_1_value);
-	        printf("[MAIN] R Source Reg 2 Value: %d\n", decoded_instruction.r_type.r_source_reg_2_value);
-		
-		if(branch > 0){
-            		pc = branch - 1;
-        	}   
-       
+        if(branch > 0){
+            pc = branch - 1;
+        }  
+        //printf("%d\n", decoded_instruction.i_type.i_i);
+        print_data(&mem);
+        print_registers(&registers);
+
+
 	}
 	
 	// This is all testing... will need to move into the for-loop
