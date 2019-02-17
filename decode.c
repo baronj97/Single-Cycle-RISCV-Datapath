@@ -50,8 +50,10 @@ void decode_instruction(int* instruction, struct decode_info *decode, struct reg
 			
 			/*Read the value of the register array for the source reg vales*/
 			r_type_data.r_source_reg_1_value = registers->registers_data[r_source_reg_1];
-			r_type_data.r_source_reg_2_value = registers->registers_data[r_source_reg_2];
-			decode->r_type = r_type_data;
+            r_type_data.r_source_reg_2_value = registers->registers_data[r_source_reg_2];
+			printf("The r_source_reg2 is %d with a value of %d\n", r_type_data.r_source_reg_2, r_type_data.r_source_reg_2_value  );
+
+            decode->r_type = r_type_data;
 
             i_type_data.valid = 0;
 			s_type_data.valid = 0;

@@ -1,2 +1,14 @@
-ld x1, x1(00)
-add x2, x1, x1
+ld x4, x0(18)
+ld x1, x0(18)
+ld x2, x0(16)
+ld x3, x0(17)
+slli x10, x1, 2
+beq x1, x3, 13
+add x11, x10, x4
+ld x12, x11(00)
+sll x13, x12, x1
+add x2, x2, x13
+addi x4, x4, 1
+addi x1, x1, 1
+jal x1, 5
+addi x1, x1, 1

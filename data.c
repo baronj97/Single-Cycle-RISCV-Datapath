@@ -48,7 +48,13 @@ void init_register_data(struct register_data* registers){
 	int i;
 	registers->num_registers = 32;
 	for(i = 0; i < registers->num_registers; i++){
-		registers->registers_data[i] = -1;
+		if(i == 0){
+            registers->registers_data[i] = 0;
+        }
+        else{
+            registers->registers_data[i] = -1;
+          }
 	}
+ //   registers->registers_data[0] = 0;
 
 }

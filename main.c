@@ -111,20 +111,22 @@ int main(int argc, char** argv){
         if(branch > 0){
             pc = branch - 1;
             branch = -1;
+            printf("PC is now set to %d\n", pc);
+            printf("This stops when PC = %d\n", core_instructs.num_instructions);
         }  
         //printf("%d\n", decoded_instruction.i_type.i_i);
        // print_data(&mem);
         print_registers(&registers);
 	}
         t = clock() - t;
-        time_taken = time_taken + ((double) t);
+        time_taken = (time_taken + ((double) t)) * (1 / freq);
 
     }
 
 	// This is all testing... will need to move into the for-loop
 	// Declare a decode struct and decode the instruction
 	fclose(dfp);
-    time_taken = time_taken * (1 / freq);
+    //time_taken = time_taken * (1 / freq);
     printf("Time elapsed is: %.3fns\n", (time_taken / CLOCKS_PER_SEC) * 1000000000);
 
 	return 0;

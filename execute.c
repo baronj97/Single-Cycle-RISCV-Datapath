@@ -35,7 +35,8 @@ int execute(struct decode_info *decode, int pc){
 			case 0b001:
 				/*SLL* Shift Left logical*/
 				decode->r_type.r_dest_reg_value = decode->r_type.r_source_reg_1_value << decode->r_type.r_source_reg_2_value;
-				break;
+				printf("Shifting: %d << %d\n", decode->r_type.r_source_reg_1_value, decode->r_type.r_source_reg_2_value  );
+                break;
 			case 0b101:
 				/*SRL* Shift Right Logical*/
 				decode->r_type.r_dest_reg_value = decode->r_type.r_source_reg_1_value >> decode->r_type.r_source_reg_2_value;
@@ -80,7 +81,8 @@ int execute(struct decode_info *decode, int pc){
 			case 0b001:
 				/*SLLI*/
 				decode->i_type.i_dest_reg_value = decode->i_type.i_source_reg_value << decode->i_type.i_imm;
-				break;
+				printf("slli\n");
+                break;
 			case 0b100:
 				/*XORI*/
 				decode->i_type.i_dest_reg_value = decode->i_type.i_source_reg_value ^ decode->i_type.i_imm;
@@ -125,6 +127,7 @@ int execute(struct decode_info *decode, int pc){
 				    int result = (decode->sb_type.sb_imm_1 << 4) | decode->sb_type.sb_imm_2;
 
                     	pc = (decode->sb_type.sb_imm_1 << 4) | decode->sb_type.sb_imm_2;
+                        printf("PC is now %d\n", pc);
 				}
                 else{
                     pc = -1;

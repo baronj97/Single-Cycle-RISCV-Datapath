@@ -1,0 +1,10 @@
+ld x4, x0(04)
+ld x1, x0(04)
+ld x2, x0(05)
+ld x3, x0(03)
+ld x5, x0(07)
+beq x1, x3, 8 
+addi x4, x4, 1
+jalr x1, x6(00)
+addi x4, x4, 1
+addi x4, x4, 1
