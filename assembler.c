@@ -308,7 +308,8 @@ void assembly_to_machine(FILE *fp, struct instruction_memory *instruct){
                 char *temp2 = strtok_r(token, "(", &token);
                 token++;
                 token[strlen(token) -1 ] = 0;
-                //temp2++;
+                temp2++;
+                printf("temp2: %s\n", temp2); 
                 strcpy(s_type_split[1], token);
                 strcpy(s_type_split[2], temp2);
             }
@@ -325,7 +326,6 @@ void assembly_to_machine(FILE *fp, struct instruction_memory *instruct){
         modify_bits(instruction_template, 12, 14, funct3);
 
         convert_to_binary_arr(12, atoi(s_type_split[2]), imm_s);
-        printf("IMM:%d\n", atoi(s_type_split[2]));
         int temp1[5];
         temp1[4] = imm_s[11];
         temp1[3] = imm_s[10];
