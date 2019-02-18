@@ -64,7 +64,7 @@ int main(int argc, char** argv){
     }
     
 	// Open the data memory file and load it into a struct
-	dfp = fopen("data_memory.txt", "r");
+	dfp = fopen("data_memory.txt", "r+");
 
 	struct data_memory mem;
 	
@@ -131,7 +131,14 @@ int main(int argc, char** argv){
 
 	// This is all testing... will need to move into the for-loop
 	// Declare a decode struct and decode the instruction
-	fclose(dfp);
+	int a;
+    size_t ret;
+    fseek(dfp, 0, SEEK_SET);
+    for(a =0; a <mem.num_data ; a++){
+        fprintf(dfp, "%d\n", mem.data[a]);
+    }
+    print_data(&mem);
+    fclose(dfp);
     	//time_taken = time_taken * (1 / freq);
     	printf("Time elapsed is: %.3fns\n", (time_taken / CLOCKS_PER_SEC) * 1000000000);
 
