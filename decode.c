@@ -141,10 +141,17 @@ void decode_instruction(int* instruction, struct decode_info *decode, struct reg
     		s_type_data.s_source_reg_1 = s_source_reg_1;
 			s_type_data.s_source_reg_2 = s_source_reg_2;
 			s_type_data.s_imm_2 = s_imm_2;
-			/*Read the value of the source reg here*/
+            printf("s_imm_1: %d\n", s_imm_1);
+			printf("s_imm_2: %d\n", s_imm_2);
+            printf("s_source_reg_1: %d\n", s_source_reg_1);
+            printf("s_source_reg_2: %d\n", s_source_reg_2);
+
+            /*Read the value of the source reg here*/
 			//s_type_data.s_source_reg_1_value = registers->registers_data[s_source_reg_1];
 			s_type_data.s_source_reg_2_value = registers->registers_data[s_source_reg_2];
+
 			decode->s_type = s_type_data;
+
 
 			r_type_data.valid = 0;
 			i_type_data.valid = 0;
