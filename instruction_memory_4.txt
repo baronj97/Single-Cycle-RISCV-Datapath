@@ -1,0 +1,31 @@
+ld x4, x0(04)
+ld x1, x0(04)
+ld x2, x0(05)
+ld x3, x0(03)
+ld x5, x0(07)
+slli x10, x1, 2
+add x11, x10, x4
+ld x12, x11(00)
+sll x13, x12, x5
+add x2, x2, x13
+addi x4, x4, 1
+addi x5, x5, 1
+slli x10, x1, 2
+add x11, x10, x4
+ld x12, x11(00)
+sll x13, x12, x5
+add x2, x2, x13
+addi x4, x4, 1
+addi x5, x5, 1
+slli x10, x1, 2
+add x11, x10, x4
+ld x12, x11(00)
+sll x13, x12, x5
+add x2, x2, x13
+addi x4, x4, 1
+slli x10, x1, 2
+add x11, x10, x4
+ld x12, x11(00)
+sll x13, x12, x5
+add x2, x2, x13
+addi x4, x4, 1

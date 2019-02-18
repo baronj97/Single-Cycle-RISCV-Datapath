@@ -23,7 +23,7 @@ void memory(struct decode_info* decode, struct data_memory* data_mem, struct reg
         reg_data->registers_data[reg_dest]= data_mem->data[offset];
 	}
     else if(decode->s_type.valid && decode->s_type.opcode == 0b0100011){
-        int index = decode->s_type.s_imm_full + decode->s_type.s_source_reg_2;
+        int index = decode->s_type.s_imm_full + decode->s_type.s_source_reg_2_value;
         int reg_dest = decode->s_type.s_source_reg_1;
         printf("S type is here\n");
 		//reg_data->registers_data[reg_dest]= data_mem->data[offset];
