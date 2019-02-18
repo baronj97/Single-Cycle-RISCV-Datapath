@@ -122,13 +122,13 @@ int main(int argc, char** argv){
         }  
         //printf("%d\n", decoded_instruction.i_type.i_i);
        	// print_data(&mem);
-        print_registers(&registers);
+        //print_registers(&registers);
 	}
         t = clock() - t;
         time_taken = (time_taken + ((double) t)) * (1 / freq);
 
     }
-
+    print_registers(&registers);
 	// This is all testing... will need to move into the for-loop
 	// Declare a decode struct and decode the instruction
 	int a;
