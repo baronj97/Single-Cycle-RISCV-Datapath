@@ -1,7 +1,0 @@
-ld x1, x0(00)
-ld x2, x0(01)
-beq x1, x2, 6
-addi x1, x1, 1
-jal x10, 3
-addi x1, x1, 2
-addi x1, x1, 25
