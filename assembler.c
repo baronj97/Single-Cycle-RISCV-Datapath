@@ -308,8 +308,7 @@ void assembly_to_machine(FILE *fp, struct instruction_memory *instruct){
                 char *temp2 = strtok_r(token, "(", &token);
                 token++;
                 token[strlen(token) -1 ] = 0;
-                temp2++;
-                printf("temp2: %s\n", temp2); 
+              //  temp2++;
                 strcpy(s_type_split[1], token);
                 strcpy(s_type_split[2], temp2);
             }
