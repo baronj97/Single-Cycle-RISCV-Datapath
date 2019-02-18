@@ -112,9 +112,7 @@ return -1;
 		switch(decode->s_type.s_funct3){
 			case 0b011:
 				/*SD*/
-         
 			    decode->s_type.s_imm_full = (decode->s_type.s_imm_1 << 4) | decode->s_type.s_imm_2;
-                printf("S_IMM_FULL: %d\n", decode->s_type.s_imm_full);
                 break;
 			default:
 				printf("This type of operation is not supported");
