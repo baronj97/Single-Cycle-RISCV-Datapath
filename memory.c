@@ -23,11 +23,21 @@ void memory(struct decode_info* decode, struct data_memory* data_mem, struct reg
         reg_data->registers_data[reg_dest]= data_mem->data[offset];
 	}
     else if(decode->s_type.valid && decode->s_type.opcode == 0b0100011){
+        /*STORE: the index should represent the line number you want to save it
+         *For example, sd x4, 29(x0) saves x4 to line 29 of the data_mem*/
         int index = decode->s_type.s_imm_full + decode->s_type.s_source_reg_2;
         int reg_dest = decode->s_type.s_source_reg_1;
-        printf("S type is here\n");
-		//reg_data->registers_data[reg_dest]= data_mem->data[offset];
-        data_mem->data[index] = reg_data->registers_data[reg_dest];
+        //reg_data->registers_data[reg_dest]= data_mem->data[offset];
+        if(index > data_mem->num_data){
+            int old = data_mem->num_data;
+            data_mem->num_data = index;
+            int i;
+            for(i = old; i <= index; i++){
+                data_mem->data[i] = 0;
+            }
+        }
+        data_mem->data[index-1] = reg_data->registers_data[reg_dest];
+        
     }
     else if(decode->i_type.valid && decode->i_type.opcode == 0b1100111){
         reg_data->registers_data[decode->i_type.i_dest_reg] = decode->i_type.i_dest_reg_value;
