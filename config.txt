@@ -1,2 +1,2 @@
-nummber of cores: 1
+nummber of cores: 4
 frequency: 1

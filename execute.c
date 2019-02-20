@@ -73,7 +73,7 @@ int execute(struct decode_info *decode, int pc){
 					/*JALR*/
 				        // NOT DONE!	
                     decode->i_type.i_dest_reg_value = pc;               
-                    pc  = decode->i_type.i_source_reg + decode->i_type.i_imm;
+                    pc  = decode->i_type.i_source_reg_value + decode->i_type.i_imm;
                     return pc;   
 					break;		
 				}

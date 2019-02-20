@@ -80,8 +80,8 @@ int main(int argc, char** argv){
         clock_t t;
         t = clock();
         core_instructs.num_instructions = cores[i].instruction_set.num_instructions;
-        //core_instructs.instructions_array = cores[i].instruction_set.instructions_array;
-	    int j = 0;
+	    printf("NUM_INSTRUCTS : %d\n", core_instructs.num_instructions);
+        int j;
         for(j =0; j < 256; j++){
             int k;
             for(k =0; k < 32; k++){
@@ -94,7 +94,6 @@ int main(int argc, char** argv){
 	    // Iterate over each instruction while incrementing the pc
 	    // Decode the instructions in the loop as well
 	for(pc = 0; pc < core_instructs.num_instructions;pc++){
-		printf("The PC is: %d\n", (pc+1));
         	int instruct[32];
 		instruction_fetch(&core_instructs, pc, instruct);
  		// print_instruction(instruct);
@@ -112,7 +111,7 @@ int main(int argc, char** argv){
 		/*Go to writeback stage*/
 		writeback(&decoded_instruction, &registers);
 	
-	printf("[MAIN] PC after execute: %d\n", pc);
+	//printf("[MAIN] PC after execute: %d\n", pc);
 
         if(branch > 0){
             pc = branch - 1;
@@ -122,7 +121,7 @@ int main(int argc, char** argv){
         }  
         //printf("%d\n", decoded_instruction.i_type.i_i);
        	// print_data(&mem);
-        print_registers(&registers);
+ //       print_registers(&registers);
 	}
         t = clock() - t;
         time_taken = (time_taken + ((double) t)) * (1 / freq);
@@ -137,7 +136,8 @@ int main(int argc, char** argv){
     for(a =0; a <mem.num_data ; a++){
         fprintf(dfp, "%d\n", mem.data[a]);
     }
-    print_data(&mem);
+ //   print_data(&mem);
+    print_registers(&registers);
     fclose(dfp);
     	//time_taken = time_taken * (1 / freq);
     	printf("Time elapsed is: %.3fns\n", (time_taken / CLOCKS_PER_SEC) * 1000000000);
