@@ -47,8 +47,11 @@ int main(int argc, char** argv){
     token = strtok(NULL, ":");
     token++;
     freq = atof(token);
- 
-
+    if(argc != num_cores + 2){
+        printf("ERROR: You did not supply enough instruction memory files\nHint: Provide 1 file for each core\nYour configuration file specifies %d cores, so please run again with %d instruction memory files\n", num_cores, num_cores);
+        return 1;
+    }
+    
     struct core cores[num_cores];
     int core_index;
     for(core_index = 0; core_index < num_cores; core_index++){
@@ -115,7 +118,8 @@ int main(int argc, char** argv){
 
         if(branch > 0){
             pc = branch - 1;
-	    printf("PC is set to %d\n", pc);
+           // pc = branch;
+	        printf("PC is set to %d\n", pc);
             branch = -1;
             printf("This stops when PC = %d\n", core_instructs.num_instructions);
         }  

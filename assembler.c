@@ -262,7 +262,9 @@ void assembly_to_machine(FILE *fp, struct instruction_memory *instruct){
 
                  split_count++;
              }
-                printf("%d\n", atoi(i_type_split[0]));
+                printf("[Assembler]: RD = %d\n", atoi(i_type_split[0]));
+                printf("[Assembler]: RS1 = %d\n", atoi(i_type_split[1]));
+                printf("[Assembler]: IMM = %d\n", atoi(i_type_split[2]));
 
                 convert_to_binary_arr(5, atoi(i_type_split[0]),rd);
                 modify_bits(instruction_template,7, 11, rd);
