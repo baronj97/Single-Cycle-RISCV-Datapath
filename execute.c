@@ -73,7 +73,12 @@ int execute(struct decode_info *decode, int pc){
 					/*JALR*/
 				        // NOT DONE!	
                     decode->i_type.i_dest_reg_value = pc;               
-                    pc  = decode->i_type.i_source_reg_value + decode->i_type.i_imm;
+                    printf("[JALR] PC Before JALR: %d\n", pc);
+                    printf("[JALR] Source Reg Value: %d\n", decode->i_type.i_source_reg_value);
+                    printf("[JALR] Imm Value: %d\n", decode->i_type.i_imm);
+                    pc  = (decode->i_type.i_source_reg_value + decode->i_type.i_imm) - 1;
+                    printf("[JALR] PC After JALR: %d\n", pc);
+
                     return pc;   
 					break;		
 				}
