@@ -169,8 +169,9 @@ return -1;
 				/*JAL*/
 				/*decode->uj_type.uj_dest_reg_value = PC + 4; PC - PC + (imm,1b'0)*/
                 		//decode->uj_type.uj_dest_reg_value = pc;               
-				decode->uj_type.uj_dest_reg_value = pc;
-				pc = (decode->uj_type.uj_imm);
+				printf("[UJ TYPE] PC Before JAL: %d\n", pc);
+                decode->uj_type.uj_dest_reg_value = pc;
+				pc = decode->uj_type.uj_imm - 1;
 
 				printf("[UJ TYPE] PC: %d\n", pc);
 				printf("Dest value of UJ: %d\n", decode->uj_type.uj_dest_reg_value);

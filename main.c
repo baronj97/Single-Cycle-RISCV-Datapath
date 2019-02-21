@@ -115,7 +115,8 @@ int main(int argc, char** argv){
 
         if(branch > 0){
             pc = branch - 1;
-	    printf("PC is set to %d\n", pc);
+           // pc = branch;
+	        printf("PC is set to %d\n", pc);
             branch = -1;
             printf("This stops when PC = %d\n", core_instructs.num_instructions);
         }  
