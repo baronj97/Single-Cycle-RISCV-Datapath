@@ -9,4 +9,7 @@ add x16, x16, x27
 addi x1, x1, 1
 addi x13, x13, 1
 jalr x31, x0(05)
+sd x4, 29(x0)
+sd x7, 30(x0)
+sd x12, 31(x0)
 sd x16, 32(x0)

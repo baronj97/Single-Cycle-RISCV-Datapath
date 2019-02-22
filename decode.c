@@ -20,7 +20,7 @@ void decode_instruction(int* instruction, struct decode_info *decode, struct reg
 		// R-type (add sub sll srl xor or and)
 		case 0b0110011:
 			;
-            int r_dest_reg_arr[5];
+            		int r_dest_reg_arr[5];
 			get_bits(instruction, 7, 11, r_dest_reg_arr);
 			unsigned int r_dest_reg = convert_arr_to_decimal(r_dest_reg_arr, 5);
 		       
@@ -50,12 +50,11 @@ void decode_instruction(int* instruction, struct decode_info *decode, struct reg
 			
 			/*Read the value of the register array for the source reg vales*/
 			r_type_data.r_source_reg_1_value = registers->registers_data[r_source_reg_1];
-            r_type_data.r_source_reg_2_value = registers->registers_data[r_source_reg_2];
-			printf("The r_source_reg2 is %d with a value of %d\n", r_type_data.r_source_reg_2, r_type_data.r_source_reg_2_value  );
+            		r_type_data.r_source_reg_2_value = registers->registers_data[r_source_reg_2];
 
-            decode->r_type = r_type_data;
+            		decode->r_type = r_type_data;
 
-            i_type_data.valid = 0;
+            		i_type_data.valid = 0;
 			s_type_data.valid = 0;
 			sb_type_data.valid = 0;
 			uj_type_data.valid = 0;
@@ -67,7 +66,7 @@ void decode_instruction(int* instruction, struct decode_info *decode, struct reg
 
 			break;
 		// I-type (addi slli xori srli ori andi)
-        case 0b0010011:
+        	case 0b0010011:
 		// Special I-type (ld) 
 		case 0b0000011:
 		// Special I-type (jalr)
@@ -134,20 +133,20 @@ void decode_instruction(int* instruction, struct decode_info *decode, struct reg
 			get_bits(instruction, 25, 31, s_imm_2_arr);
 			unsigned int s_imm_2 = convert_arr_to_decimal(s_imm_2_arr, 7);
 			
-            s_type_data.valid = 1;
+            		s_type_data.valid = 1;
 			s_type_data.opcode = opcode;
 			s_type_data.s_imm_1 = s_imm_1;
 			s_type_data.s_funct3 = s_funct3;
-    		s_type_data.s_source_reg_1 = s_source_reg_1;
+    			s_type_data.s_source_reg_1 = s_source_reg_1;
 			s_type_data.s_source_reg_2 = s_source_reg_2;
 			s_type_data.s_imm_2 = s_imm_2;
+
 			/*Read the value of the source reg here*/
 			//s_type_data.s_source_reg_1_value = registers->registers_data[s_source_reg_1];
 
 			s_type_data.s_source_reg_2_value = registers->registers_data[s_source_reg_2];
 
 			decode->s_type = s_type_data;
-
 
 			r_type_data.valid = 0;
 			i_type_data.valid = 0;
@@ -161,7 +160,7 @@ void decode_instruction(int* instruction, struct decode_info *decode, struct reg
 			
 			break;
 		// SB-type (beq bne blt bge)
-        case 0b1100011:
+        	case 0b1100011:
 			;
 			int sb_imm_1_arr[5];
 			get_bits(instruction, 7, 11, sb_imm_1_arr);
@@ -197,7 +196,7 @@ void decode_instruction(int* instruction, struct decode_info *decode, struct reg
 			sb_type_data.sb_source_reg_2_value = registers->registers_data[sb_source_reg_2];
 			decode->sb_type = sb_type_data;
 
-            r_type_data.valid = 0;
+            		r_type_data.valid = 0;
 			i_type_data.valid = 0;
 			s_type_data.valid = 0;
 			uj_type_data.valid = 0;
@@ -211,7 +210,7 @@ void decode_instruction(int* instruction, struct decode_info *decode, struct reg
 		// UJ-type (jal)
 		case 0b0101111:
 			;
-            int uj_dest_reg_arr[5];
+        		int uj_dest_reg_arr[5];
 			get_bits(instruction, 7, 11, uj_dest_reg_arr);
 			unsigned int uj_dest_reg = convert_arr_to_decimal(uj_dest_reg_arr, 5);
 		    
@@ -223,7 +222,6 @@ void decode_instruction(int* instruction, struct decode_info *decode, struct reg
 			uj_type_data.opcode = opcode;
 			uj_type_data.uj_dest_reg = uj_dest_reg;
 			uj_type_data.uj_imm = uj_imm;
-            printf("The uj imm frrom decode is %d\n", uj_imm);
 			decode->uj_type = uj_type_data;
 
 			r_type_data.valid = 0;
@@ -240,7 +238,5 @@ void decode_instruction(int* instruction, struct decode_info *decode, struct reg
 		// No-type	
 		default:
 			printf("This instruction is not supported!\n");
-
 	}
-
 };

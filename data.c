@@ -55,6 +55,4 @@ void init_register_data(struct register_data* registers){
             registers->registers_data[i] = -1;
           }
 	}
- //   registers->registers_data[0] = 0;
-
 }

@@ -84,7 +84,6 @@ void assembly_to_machine(FILE *fp, struct instruction_memory *instruct){
             int instruction_template[32];
             init_instruct(instruction_template);
             int not_decoded = 1;
- //   printf("Original Number: %x\n", instruction_template);
     int opcode[7];
     int funct3[3];
     int funct7[7];
@@ -170,8 +169,6 @@ void assembly_to_machine(FILE *fp, struct instruction_memory *instruct){
 
                  split_count++;
              }
-                //printf("%d\n", atoi(i_type_split[2]));
-
                 convert_to_binary_arr(5, atoi(i_type_split[0]),rd);
                 modify_bits(instruction_template,7, 11, rd);
         
@@ -262,10 +259,6 @@ void assembly_to_machine(FILE *fp, struct instruction_memory *instruct){
 
                  split_count++;
              }
-                printf("[Assembler]: RD = %d\n", atoi(i_type_split[0]));
-                printf("[Assembler]: RS1 = %d\n", atoi(i_type_split[1]));
-                printf("[Assembler]: IMM = %d\n", atoi(i_type_split[2]));
-
                 convert_to_binary_arr(5, atoi(i_type_split[0]),rd);
                 modify_bits(instruction_template,7, 11, rd);
         
@@ -311,8 +304,6 @@ void assembly_to_machine(FILE *fp, struct instruction_memory *instruct){
                 token++;
                 token[strlen(token) -1 ] = 0;
 
-
-              //  temp2++;
                 strcpy(s_type_split[1], token);
                 strcpy(s_type_split[2], temp2);
             }
@@ -387,7 +378,6 @@ void assembly_to_machine(FILE *fp, struct instruction_memory *instruct){
 
             convert_to_binary_arr(5, atoi(r_type_split[1]), rs1);
             modify_bits(instruction_template, 15, 19, rs1);
-            printf("%s\n", r_type_split[2]);
             convert_to_binary_arr(5, atoi(r_type_split[2]), rs2);
             modify_bits(instruction_template, 20, 24, rs2);
 
