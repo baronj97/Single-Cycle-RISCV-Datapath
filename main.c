@@ -115,9 +115,9 @@ int main(int argc, char** argv){
 	    writeback(&decoded_instruction, &registers);
 	
 	    if(branch > 0){
-            	pc = branch - 1;
+            pc = branch - 1;
           	branch = -1;
-            }  
+       }  
 	}
 
         t = clock() - t;
