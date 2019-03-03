@@ -137,7 +137,8 @@ int main(int argc, char** argv){
             else{
                 printf("Executed! with id %d\n", pipe->ex_instruct->id);
                 branch = execute(pipe->ex_instruct, pc);
-                if(pc == 2){
+                printf("The branch returned %d\n", branch);
+                if(branch > 0){
                     flush = 1;
                     printf("Flush triggered\n");
                  }
@@ -153,7 +154,7 @@ int main(int argc, char** argv){
             decode_instruction(pipe->temp, pipe->id_instruct, &registers);
            // print_registers(&registers);
             pipe->id_instruct->id = pc;
-            if(pc == 2){
+            if(pc == 200){
                 printf("Stalling!\n");
                 stall = 1;
                 stall_count = 3;
@@ -171,6 +172,7 @@ int main(int argc, char** argv){
             }
         }
         if(branch > 0){
+            printf("Need to branch\n");
             pc = branch - 1;
           	branch = -1;
        }
