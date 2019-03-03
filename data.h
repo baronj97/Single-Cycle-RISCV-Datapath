@@ -8,9 +8,11 @@ struct data_memory{
 struct register_data{
 	int num_registers;
 	int registers_data[32];
-
+    int registers_valid[32];
 };
 void init_data_memory(FILE *dfp, struct data_memory *mem);
 void print_data(struct data_memory *mem);
 void init_register_data(struct register_data *registers);
+void make_dirty(struct register_data *registers, int register_index);
+void make_clean(struct register_data *registers, int register_index);
 #endif

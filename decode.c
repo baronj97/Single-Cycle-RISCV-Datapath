@@ -47,7 +47,7 @@ void decode_instruction(int* instruction, struct decode_info *decode, struct reg
 			r_type_data.r_source_reg_1 = r_source_reg_1;
 			r_type_data.r_source_reg_2 = r_source_reg_2;
 			r_type_data.r_funct7 = r_funct7;
-			
+			make_dirty(registers, r_dest_reg);
 			/*Read the value of the register array for the source reg vales*/
 			r_type_data.r_source_reg_1_value = registers->registers_data[r_source_reg_1];
             		r_type_data.r_source_reg_2_value = registers->registers_data[r_source_reg_2];
@@ -93,7 +93,7 @@ void decode_instruction(int* instruction, struct decode_info *decode, struct reg
 			i_type_data.i_funct3 = i_funct3;
 			i_type_data.i_source_reg = i_source_reg;
 			i_type_data.i_imm = i_imm;
-
+            make_dirty(registers, i_dest_reg);
 			/*Read the value of the source reg here*/
 			i_type_data.i_source_reg_value = registers->registers_data[i_source_reg];
 			decode->i_type = i_type_data;
@@ -223,7 +223,7 @@ void decode_instruction(int* instruction, struct decode_info *decode, struct reg
 			uj_type_data.uj_dest_reg = uj_dest_reg;
 			uj_type_data.uj_imm = uj_imm;
 			decode->uj_type = uj_type_data;
-
+            make_dirty(registers, uj_dest_reg);
 			r_type_data.valid = 0;
 			i_type_data.valid = 0;
 			s_type_data.valid = 0;

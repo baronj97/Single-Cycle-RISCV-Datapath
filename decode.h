@@ -64,7 +64,10 @@ struct uj_type_info{
 };
 
 struct decode_info{
-	struct r_type_info r_type;
+	int id;
+    int flush;
+    int stall;
+    struct r_type_info r_type;
 	struct i_type_info i_type;	
 	struct s_type_info s_type;
 	struct sb_type_info sb_type;

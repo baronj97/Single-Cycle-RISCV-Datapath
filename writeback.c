@@ -3,11 +3,14 @@
 void writeback(struct decode_info* decode, struct register_data* registers){
 	if(decode->r_type.valid){
  	    registers->registers_data[decode->r_type.r_dest_reg] = decode->r_type.r_dest_reg_value;
-	}
+        make_clean(registers, decode->r_type.r_dest_reg);
+    }
         else if(decode->i_type.valid && !(decode->i_type.i_funct3 == 0b011)){
             registers->registers_data[decode->i_type.i_dest_reg] = decode->i_type.i_dest_reg_value;
+            make_clean(registers, decode->i_type.i_dest_reg);
         }
 	else if (decode->uj_type.valid){
 	    registers->registers_data[decode->uj_type.uj_dest_reg] = decode->uj_type.uj_dest_reg_value;
+        make_clean(registers, decode->uj_type.uj_dest_reg);
 	}
 }

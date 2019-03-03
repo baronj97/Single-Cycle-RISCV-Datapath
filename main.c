@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include "instructions.h"
 #include "data.h"
 #include "instructionfetch.h"
@@ -11,13 +13,14 @@
 #include "execute.h"
 #include "assembler.h"
 #include "config.h"
+#include "pipelining.h"
+
 
 void print_instruction(int* instruct){
     int i;
     for(i = 0; i < 32; i++)
     printf("%d", instruct[i]);
     printf("\n");
-
 }
 
 
@@ -93,39 +96,137 @@ int main(int argc, char** argv){
 	// Initialize the program counter
 	int pc;
 	int branch = -1;
-	
+	int flush = 0;
+    int cur_flush = 0;
+    int stall = 0;
+    int stall_count = 0;
 	// Iterate over each instruction while incrementing the pc
 	// Decode the instructions in the loop as well
-	for(pc = 0; pc < core_instructs.num_instructions;pc++){
-            int instruct[32];
-            instruction_fetch(&core_instructs, pc, instruct);
-        	
-	    /*Decode the instruction*/
-  	    struct decode_info decoded_instruction;
-            decode_instruction(instruct, &decoded_instruction, &registers);
-		
-	    /*Execute the instruction*/
-	    branch = execute(&decoded_instruction, pc);
-		
-	    /*If the instruction is i type, feed it to the mem stage*/
-	    if(decoded_instruction.i_type.valid || decoded_instruction.s_type.valid || decoded_instruction.uj_type.valid)
-	    memory(&decoded_instruction, &mem, &registers);
-	    
-	    /*Go to writeback stage*/
-	    writeback(&decoded_instruction, &registers);
-	
-	    if(branch > 0){
+	struct pipeline *pipe = malloc(sizeof(struct pipeline));
+    init_pipeline(pipe);
+    int setup = 1;
+    for(pc = 0; pc < core_instructs.num_instructions + 5;pc++){
+        printf("PC %d\n", pc);
+        if(setup > 4 && pc < core_instructs.num_instructions + 4 && pipe->wb_instruct != NULL && flush != 1){
+            if (stall){
+                stall_count--;
+            }
+            else{
+                printf("writeback with id %d\n", pipe->wb_instruct->id);
+                writeback(pipe->wb_instruct, &registers);
+            // print_registers(&registers);
+           }
+        }   
+        if(setup > 3 && pc < core_instructs.num_instructions + 3 && pipe->me_instruct != NULL && flush != 1){
+            if (stall) {
+                stall_count--;
+            }
+            else{
+                printf("Memory with id %d\n", pipe->me_instruct->id);
+                if(pipe->me_instruct->i_type.valid || pipe->me_instruct->s_type.valid || pipe->me_instruct->uj_type.valid){
+	                memory(pipe->me_instruct, &mem, &registers);
+                }
+                // print_registers(&registers);
+            }
+        }
+
+        if(setup > 2 && pc < core_instructs.num_instructions + 2 && pipe->ex_instruct != NULL && flush != 1){
+            if (stall) {
+                stall_count--;
+            }
+            else{
+                printf("Executed! with id %d\n", pipe->ex_instruct->id);
+                branch = execute(pipe->ex_instruct, pc);
+                if(pc == 2){
+                    flush = 1;
+                    printf("Flush triggered\n");
+                 }
+                // print_registers(&registers);
+           }
+        }
+        if(setup > 1 && pc < core_instructs.num_instructions + 1){
+            if(stall && !stall_count){
+                stall = 0;
+            }else{
+            printf("Decoded!\n");
+         //   print_instruction(pipe->temp);
+            decode_instruction(pipe->temp, pipe->id_instruct, &registers);
+           // print_registers(&registers);
+            pipe->id_instruct->id = pc;
+            if(pc == 2){
+                printf("Stalling!\n");
+                stall = 1;
+                stall_count = 3;
+                core_instructs.num_instructions = core_instructs.num_instructions + 3;
+            }
+            }
+        }
+        if(pc < core_instructs.num_instructions){    
+            if(!stall){
+            
+            printf("Fetched\n");
+    
+            instruction_fetch(&core_instructs, pc, pipe->instruct);
+             //   print_registers(&registers);
+            }
+        }
+        if(branch > 0){
             pc = branch - 1;
           	branch = -1;
-       }  
+       }
+        struct decode_info *temp_id = malloc(sizeof(struct decode_info));
+        temp_id = pipe->id_instruct;
+        struct decode_info *temp_me = malloc(sizeof(struct decode_info));
+        temp_me = pipe->me_instruct;
+        struct decode_info *temp_ex = malloc(sizeof(struct decode_info));
+        temp_ex = pipe->ex_instruct;
+
+        if (flush || stall){
+            /*pipe->wb_instruct = NULL;
+            pipe->me_instruct = NULL;
+            pipe->ex_instruct = NULL;
+            pipe->id_instruct = NULL; */
+        }
+        else{
+            pipe->wb_instruct->r_type = temp_me->r_type;
+            pipe->me_instruct->r_type = temp_ex->r_type;
+            pipe->ex_instruct->r_type = temp_id->r_type;
+            pipe->wb_instruct->i_type = temp_me->i_type;
+            pipe->me_instruct->i_type = temp_ex->i_type;
+            pipe->ex_instruct->i_type = temp_id->i_type;
+
+        
+            pipe->wb_instruct->s_type = temp_me->s_type;
+            pipe->me_instruct->s_type = temp_ex->s_type;
+            pipe->ex_instruct->s_type = temp_id->s_type;
+
+            pipe->wb_instruct->sb_type = temp_me->sb_type;
+            pipe->me_instruct->sb_type = temp_ex->sb_type;
+            pipe->ex_instruct->sb_type = temp_id->sb_type;
+
+            pipe->wb_instruct->uj_type = temp_me->uj_type;
+            pipe->me_instruct->uj_type = temp_ex->uj_type;
+            pipe->ex_instruct->uj_type = temp_id->uj_type;
+            if(pc < core_instructs.num_instructions){
+                int l;
+                for(l =0; l < 32; l++)
+                    pipe->temp[l] = pipe->instruct[l];
+            }
+        }
+        if(flush){
+            flush = 0;
+            setup = 0;
+        }
+        if(!stall)
+        setup++;
+        //print_registers(&registers);
+        printf("Next cycle\n");
 	}
 
         t = clock() - t;
         time_taken = (time_taken + ((double) t)) * (1 / freq);
     }
 
-    // This is all testing... will need to move into the for-loop	
-    // Declare a decode struct and decode the instruction
     int a;
     size_t ret;
     fseek(dfp, 0, SEEK_SET);

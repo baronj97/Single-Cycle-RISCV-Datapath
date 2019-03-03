@@ -12,6 +12,7 @@ struct data_memory{
 struct register_data{
 	int num_registers;
 	int registers_data[32];	
+    int registers_valid[32];
 };
 
 // A function to print the data
@@ -38,10 +39,21 @@ void print_registers(struct register_data* registers){
     int i;
 	registers->num_registers = 32;
 	for(i = 0; i < registers->num_registers; i++){
-		printf("reg%d = %d\n",i, registers->registers_data[i]);
+		printf("reg%d = %d,    valid= %d\n",i, registers->registers_data[i], registers->registers_valid[i]);
 	}
 
 
+}
+
+void make_dirty(struct register_data* registers, int register_index){
+    if(registers->registers_valid[register_index]){
+        registers->registers_valid[register_index] = 0;
+    }
+}
+void make_clean(struct register_data* registers, int register_index){
+    if(!registers->registers_valid[register_index]){
+        registers->registers_valid[register_index] = 1;
+    }
 }
 
 void init_register_data(struct register_data* registers){
@@ -54,5 +66,6 @@ void init_register_data(struct register_data* registers){
         else{
             registers->registers_data[i] = -1;
           }
+        registers->registers_valid[i] = 1;
 	}
 }
