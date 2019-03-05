@@ -106,6 +106,7 @@ int main(int argc, char** argv){
 	struct pipeline *pipe = malloc(sizeof(struct pipeline));
     init_pipeline(pipe);
     int setup = 1;
+    int instruction_count = 0;
     for(pc = 0; pc < core_instructs.num_instructions + 5;pc++){
         printf("PC %d\n", pc);
         if(setup > 4 && pc < core_instructs.num_instructions + 4 && pipe->wb_instruct != NULL && flush != 1){
@@ -149,7 +150,7 @@ int main(int argc, char** argv){
         if(setup > 1 && pc < core_instructs.num_instructions + 1){
             if(stall && !stall_count){
                 stall = 0;
-            }else{
+            }else if( !stall){
             printf("Decoded!\n");
          //   print_instruction(pipe->temp);
             stall_check =  decode_instruction(pipe->temp, pipe->id_instruct, &registers);
@@ -158,8 +159,8 @@ int main(int argc, char** argv){
             if(pc ==2){
                 printf("Stalling!\n");
                 stall = 1;
-                stall_count = 3;
-                core_instructs.num_instructions = core_instructs.num_instructions + 3;
+                stall_count = 4;
+                core_instructs.num_instructions = core_instructs.num_instructions + stall_count;
             }
             }
         }
@@ -167,8 +168,10 @@ int main(int argc, char** argv){
             if(!stall){
             
             printf("Fetched\n");
-            instruction_fetch(&core_instructs, pc, pipe->instruct);
-             //   print_registers(&registers);
+            instruction_fetch(&core_instructs, instruction_count, pipe->instruct);
+            instruction_count++;
+            print_instruction(pipe->instruct); 
+            //   print_registers(&registers);
             }
         }
         if(branch > 0){
