@@ -5,9 +5,10 @@
 #include "assembler.h"
 // A function that returns the specified array of bits in a number
 
-void decode_instruction(int* instruction, struct decode_info *decode, struct register_data* registers){
+int decode_instruction(int* instruction, struct decode_info *decode, struct register_data* registers){
 	// All opcode in same location!
-	int opcode_arr[7]; 
+	int stall = 0;
+    int opcode_arr[7]; 
 	unsigned int opcode;
 	get_bits(instruction, 0, 6, opcode_arr);
     	opcode = convert_arr_to_decimal(opcode_arr, 7);
@@ -49,12 +50,22 @@ void decode_instruction(int* instruction, struct decode_info *decode, struct reg
 			r_type_data.r_funct7 = r_funct7;
 			make_dirty(registers, r_dest_reg);
 			/*Read the value of the register array for the source reg vales*/
-			r_type_data.r_source_reg_1_value = registers->registers_data[r_source_reg_1];
-            		r_type_data.r_source_reg_2_value = registers->registers_data[r_source_reg_2];
+			
+            if(!is_dirty(registers, r_source_reg_1)){
+                r_type_data.r_source_reg_1_value = registers->registers_data[r_source_reg_1];
+            }
+            else{
+                stall = 1;
+            }
+            if(!is_dirty(registers, r_source_reg_2)){
+                r_type_data.r_source_reg_2_value = registers->registers_data[r_source_reg_2];
+            }
+            else{
+                stall = 1;
+            }
+            decode->r_type = r_type_data;
 
-            		decode->r_type = r_type_data;
-
-            		i_type_data.valid = 0;
+            i_type_data.valid = 0;
 			s_type_data.valid = 0;
 			sb_type_data.valid = 0;
 			uj_type_data.valid = 0;
@@ -95,8 +106,14 @@ void decode_instruction(int* instruction, struct decode_info *decode, struct reg
 			i_type_data.i_imm = i_imm;
             make_dirty(registers, i_dest_reg);
 			/*Read the value of the source reg here*/
-			i_type_data.i_source_reg_value = registers->registers_data[i_source_reg];
-			decode->i_type = i_type_data;
+			
+            if(!is_dirty(registers, i_source_reg)){
+                i_type_data.i_source_reg_value = registers->registers_data[i_source_reg];
+            }
+            else{
+                stall = 1;
+            }
+            decode->i_type = i_type_data;
                 
 
 			r_type_data.valid = 0;
@@ -143,9 +160,7 @@ void decode_instruction(int* instruction, struct decode_info *decode, struct reg
 
 			/*Read the value of the source reg here*/
 			//s_type_data.s_source_reg_1_value = registers->registers_data[s_source_reg_1];
-
-			s_type_data.s_source_reg_2_value = registers->registers_data[s_source_reg_2];
-
+			    s_type_data.s_source_reg_2_value = registers->registers_data[s_source_reg_2];
 			decode->s_type = s_type_data;
 
 			r_type_data.valid = 0;
@@ -192,11 +207,11 @@ void decode_instruction(int* instruction, struct decode_info *decode, struct reg
 			sb_type_data.sb_imm_2 = sb_imm_2;
 
 			/*Read the value of the source reg here*/
-			sb_type_data.sb_source_reg_1_value = registers->registers_data[sb_source_reg_1];
-			sb_type_data.sb_source_reg_2_value = registers->registers_data[sb_source_reg_2];
-			decode->sb_type = sb_type_data;
+                sb_type_data.sb_source_reg_1_value = registers->registers_data[sb_source_reg_1];
+                sb_type_data.sb_source_reg_2_value = registers->registers_data[sb_source_reg_2];
+            decode->sb_type = sb_type_data;
 
-            		r_type_data.valid = 0;
+            r_type_data.valid = 0;
 			i_type_data.valid = 0;
 			s_type_data.valid = 0;
 			uj_type_data.valid = 0;
@@ -239,4 +254,5 @@ void decode_instruction(int* instruction, struct decode_info *decode, struct reg
 		default:
 			printf("This instruction is not supported!\n");
 	}
+    return stall;
 };

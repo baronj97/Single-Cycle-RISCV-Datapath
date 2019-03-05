@@ -74,4 +74,4 @@ struct decode_info{
 	struct uj_type_info uj_type;
 };
 
-void decode_instruction(int* instruction, struct decode_info *decode, struct register_data* registers);
+int decode_instruction(int* instruction, struct decode_info *decode, struct register_data* registers);

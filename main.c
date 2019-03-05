@@ -100,7 +100,8 @@ int main(int argc, char** argv){
     int cur_flush = 0;
     int stall = 0;
     int stall_count = 0;
-	// Iterate over each instruction while incrementing the pc
+	int stall_check = 0;
+    // Iterate over each instruction while incrementing the pc
 	// Decode the instructions in the loop as well
 	struct pipeline *pipe = malloc(sizeof(struct pipeline));
     init_pipeline(pipe);
@@ -151,10 +152,10 @@ int main(int argc, char** argv){
             }else{
             printf("Decoded!\n");
          //   print_instruction(pipe->temp);
-            decode_instruction(pipe->temp, pipe->id_instruct, &registers);
+            stall_check =  decode_instruction(pipe->temp, pipe->id_instruct, &registers);
            // print_registers(&registers);
             pipe->id_instruct->id = pc;
-            if(pc == 200){
+            if(pc ==2){
                 printf("Stalling!\n");
                 stall = 1;
                 stall_count = 3;
@@ -166,7 +167,6 @@ int main(int argc, char** argv){
             if(!stall){
             
             printf("Fetched\n");
-    
             instruction_fetch(&core_instructs, pc, pipe->instruct);
              //   print_registers(&registers);
             }
@@ -209,6 +209,11 @@ int main(int argc, char** argv){
             pipe->wb_instruct->uj_type = temp_me->uj_type;
             pipe->me_instruct->uj_type = temp_ex->uj_type;
             pipe->ex_instruct->uj_type = temp_id->uj_type;
+            
+            pipe->wb_instruct->id = temp_me->id;
+            pipe->me_instruct->id = temp_ex->id;
+            pipe->ex_instruct->id = temp_id->id;
+        
             if(pc < core_instructs.num_instructions){
                 int l;
                 for(l =0; l < 32; l++)
@@ -218,9 +223,11 @@ int main(int argc, char** argv){
         if(flush){
             flush = 0;
             setup = 0;
+            make_all_clean(&registers);
         }
-        if(!stall)
-        setup++;
+        if(!stall){
+            setup++;
+        }
         //print_registers(&registers);
         printf("Next cycle\n");
 	}

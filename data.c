@@ -45,6 +45,15 @@ void print_registers(struct register_data* registers){
 
 }
 
+int is_dirty(struct register_data* registers, int index){
+    if(registers->registers_valid[index] == 1){
+        return 0;
+    }
+    else{
+        return 1;
+    }
+}
+
 void make_dirty(struct register_data* registers, int register_index){
     if(registers->registers_valid[register_index]){
         registers->registers_valid[register_index] = 0;
@@ -55,7 +64,11 @@ void make_clean(struct register_data* registers, int register_index){
         registers->registers_valid[register_index] = 1;
     }
 }
-
+void make_all_clean(struct register_data* registers){
+    int i;
+    for(i = 0; i < 32; i++)
+        registers->registers_valid[i] = 1;
+}
 void init_register_data(struct register_data* registers){
 	int i;
 	registers->num_registers = 32;
