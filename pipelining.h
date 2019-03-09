@@ -12,3 +12,14 @@ struct pipeline {
     int me_valid;
     int wb_valid;
 };
+
+struct forward {
+    int num_reg;
+    int forwarder_is_i;
+    int forwarder_is_r;
+    int forwardee_is_i;
+    int forwardee_is_r;
+};
+
+
+int is_found(struct decode_info* instruct, int reg_num);

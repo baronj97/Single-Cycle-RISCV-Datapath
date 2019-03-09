@@ -100,7 +100,7 @@ int main(int argc, char** argv){
     int cur_flush = 0;
     int stall = 0;
     int stall_count = 0;
-	int stall_check = 0;
+	int stall_num = 0;
     // Iterate over each instruction while incrementing the pc
 	// Decode the instructions in the loop as well
 	struct pipeline *pipe = malloc(sizeof(struct pipeline));
@@ -153,15 +153,139 @@ int main(int argc, char** argv){
             }else if( !stall){
             printf("Decoded!\n");
          //   print_instruction(pipe->temp);
-            stall_check =  decode_instruction(pipe->temp, pipe->id_instruct, &registers);
+            struct stall_check stall_data;
+            stall_num =  decode_instruction(pipe->temp, pipe->id_instruct, &registers, &stall_data);
            // print_registers(&registers);
+            print_stall(&stall_data);
             pipe->id_instruct->id = pc;
-            if(pc ==2){
-                printf("Stalling!\n");
-                stall = 1;
+            if(stall_num){
+                //printf("Stalling!\n");
+                /*stall = 1;
                 stall_count = 4;
-                core_instructs.num_instructions = core_instructs.num_instructions + stall_count;
+                core_instructs.num_instructions = core_instructs.num_instructions + stall_count;*/
+                int reg_index;
+                for(reg_index = 0; reg_index < stall_data.num_regs; reg_index++){
+                    /* Iterate over each register
+                     * Change the assignent based on the register*/   
+                    int ret = 0;
+                    if(reg_index == 0){
+                        if((ret = is_found(pipe->ex_instruct, stall_data.rs1)) > 0){
+                            printf("ret = %d\n", ret);
+                            printf("Found in EX struct\n");
+                            switch(ret){
+                                case 1:
+                                    printf("R type\n");
+                                    if(pipe->id_instruct->r_type.valid){
+                                        pipe->id_instruct->r_type.r_source_reg_1_value = pipe->ex_instruct->r_type.r_dest_reg_value;
+                                        printf("val: %d\n", pipe->id_instruct->r_type.r_dest_reg_value);
+                                    }
+                                    else if(pipe->id_instruct->i_type.valid){
+                                        pipe->id_instruct->i_type.i_source_reg_value = pipe->ex_instruct->r_type.r_dest_reg_value;
+                                        printf("val: %d\n", pipe->id_instruct->i_type.i_dest_reg_value);
+                                    }
+                                    break;
+                                case 2:
+                                    printf("I type\n");
+                                    if(pipe->id_instruct->r_type.valid){
+                                        pipe->id_instruct->r_type.r_source_reg_1_value = pipe->ex_instruct->i_type.i_dest_reg_value;
+                                        printf("val: %d\n", pipe->id_instruct->r_type.r_dest_reg_value);
+                                    }
+                                    else if(pipe->id_instruct->i_type.valid){
+                                        pipe->id_instruct->i_type.i_source_reg_value = pipe->ex_instruct->i_type.i_dest_reg_value;
+                                        printf("val: %d\n", pipe->id_instruct->i_type.i_dest_reg_value);
+                                    }
+                                    break;
+                            }
+                        }
+                        else if((ret=is_found(pipe->me_instruct, stall_data.rs1)) > 0){
+                            printf("Found in ME struct\n");
+                            switch(ret){
+                                case 1:
+                                    printf("R type\n");
+                                    if(pipe->id_instruct->r_type.valid){
+                                        pipe->id_instruct->r_type.r_source_reg_1_value = pipe->me_instruct->r_type.r_dest_reg_value;
+                                        printf("val: %d\n", pipe->id_instruct->r_type.r_dest_reg_value);
+                                    }
+                                    else if(pipe->id_instruct->i_type.valid){
+                                        pipe->id_instruct->i_type.i_source_reg_value = pipe->me_instruct->r_type.r_dest_reg_value;
+                                        printf("val: %d\n", pipe->id_instruct->i_type.i_dest_reg_value);
+                                    }
+                                    break;
+                                case 2:
+                                    printf("I type\n");
+                                    if(pipe->id_instruct->r_type.valid){
+                                        pipe->id_instruct->r_type.r_source_reg_1_value = pipe->me_instruct->i_type.i_dest_reg_value;
+                                        printf("val: %d\n", pipe->id_instruct->r_type.r_dest_reg_value);
+                                    }
+                                    else if(pipe->id_instruct->i_type.valid){
+                                        pipe->id_instruct->i_type.i_source_reg_value = pipe->me_instruct->i_type.i_dest_reg_value;
+                                        printf("val: %d\n", pipe->id_instruct->i_type.i_dest_reg_value);
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+                    else if(reg_index == 1){
+                        if((ret = is_found(pipe->ex_instruct, stall_data.rs2)) > 0){
+                            printf("ret = %d\n", ret);
+                            printf("Found in EX struct\n");
+                            switch(ret){
+                                case 1:
+                                    printf("R type\n");
+                                    if(pipe->id_instruct->r_type.valid){
+                                        pipe->id_instruct->r_type.r_source_reg_2_value = pipe->ex_instruct->r_type.r_dest_reg_value;
+                                        printf("val: %d\n", pipe->id_instruct->r_type.r_dest_reg_value);
+                                    }
+                                    else if(pipe->id_instruct->i_type.valid){
+                                        pipe->id_instruct->i_type.i_source_reg_value = pipe->ex_instruct->r_type.r_dest_reg_value;
+                                        printf("val: %d\n", pipe->id_instruct->i_type.i_dest_reg_value);
+                                    }
+                                    break;
+                                case 2:
+                                    printf("I type\n");
+                                    if(pipe->id_instruct->r_type.valid){
+                                        pipe->id_instruct->r_type.r_source_reg_2_value = pipe->ex_instruct->i_type.i_dest_reg_value;
+                                        printf("val: %d\n", pipe->id_instruct->r_type.r_dest_reg_value);
+                                    }
+                                    else if(pipe->id_instruct->i_type.valid){
+                                        pipe->id_instruct->i_type.i_source_reg_value = pipe->ex_instruct->i_type.i_dest_reg_value;
+                                        printf("val: %d\n", pipe->id_instruct->i_type.i_dest_reg_value);
+                                    }
+                                    break;
+                            }
+                        }
+                        else if((ret=is_found(pipe->me_instruct, stall_data.rs2)) > 0){
+                            printf("Found in ME struct\n");
+                            switch(ret){
+                                case 1:
+                                    printf("R type\n");
+                                    if(pipe->id_instruct->r_type.valid){
+                                        pipe->id_instruct->r_type.r_source_reg_2_value = pipe->me_instruct->r_type.r_dest_reg_value;
+                                        printf("val: %d\n", pipe->id_instruct->r_type.r_dest_reg_value);
+                                    }
+                                    else if(pipe->id_instruct->i_type.valid){
+                                        pipe->id_instruct->i_type.i_source_reg_value = pipe->me_instruct->r_type.r_dest_reg_value;
+                                        printf("val: %d\n", pipe->id_instruct->i_type.i_dest_reg_value);
+                                    }
+                                    break;
+                                case 2:
+                                    printf("I type\n");
+                                    if(pipe->id_instruct->r_type.valid){
+                                        pipe->id_instruct->r_type.r_source_reg_2_value = pipe->me_instruct->i_type.i_dest_reg_value;
+                                        printf("val: %d\n", pipe->id_instruct->r_type.r_dest_reg_value);
+                                    }
+                                    else if(pipe->id_instruct->i_type.valid){
+                                        pipe->id_instruct->i_type.i_source_reg_value = pipe->me_instruct->i_type.i_dest_reg_value;
+                                        printf("val: %d\n", pipe->id_instruct->i_type.i_dest_reg_value);
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+                }
+                stall_num = 0;
             }
+            
             }
         }
         if(pc < core_instructs.num_instructions){    

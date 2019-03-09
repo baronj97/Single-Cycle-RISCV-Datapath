@@ -5,9 +5,25 @@
 #include "assembler.h"
 // A function that returns the specified array of bits in a number
 
-int decode_instruction(int* instruction, struct decode_info *decode, struct register_data* registers){
+void print_stall(struct stall_check* stall_data){
+    printf("# REGISTERS NEED TO FORWARD %d\n", stall_data->num_regs);
+    switch(stall_data->num_regs){
+        case(1):
+            printf("RS1: %d\n", stall_data->rs1);
+            break;
+        case(2):
+            printf("RS1: %d\n", stall_data->rs1);
+            printf("RS2: %d\n", stall_data->rs2);
+            break;
+    }
+
+}
+
+
+int decode_instruction(int* instruction, struct decode_info *decode, struct register_data* registers, struct stall_check* stall_data){
 	// All opcode in same location!
 	int stall = 0;
+    stall_data->num_regs = 0;
     int opcode_arr[7]; 
 	unsigned int opcode;
 	get_bits(instruction, 0, 6, opcode_arr);
@@ -55,13 +71,17 @@ int decode_instruction(int* instruction, struct decode_info *decode, struct regi
                 r_type_data.r_source_reg_1_value = registers->registers_data[r_source_reg_1];
             }
             else{
-                stall = 1;
+                stall = r_source_reg_1;
+                stall_data->rs1 = r_source_reg_1;
+                stall_data->num_regs++;
             }
             if(!is_dirty(registers, r_source_reg_2)){
                 r_type_data.r_source_reg_2_value = registers->registers_data[r_source_reg_2];
             }
             else{
-                stall = 1;
+                stall = r_source_reg_2;
+                stall_data->rs2 = r_source_reg_2;
+                stall_data->num_regs++;
             }
             decode->r_type = r_type_data;
 
@@ -104,15 +124,18 @@ int decode_instruction(int* instruction, struct decode_info *decode, struct regi
 			i_type_data.i_funct3 = i_funct3;
 			i_type_data.i_source_reg = i_source_reg;
 			i_type_data.i_imm = i_imm;
-            make_dirty(registers, i_dest_reg);
+            //make_dirty(registers, i_dest_reg);
 			/*Read the value of the source reg here*/
 			
             if(!is_dirty(registers, i_source_reg)){
                 i_type_data.i_source_reg_value = registers->registers_data[i_source_reg];
             }
             else{
-                stall = 1;
+                stall = i_source_reg;
+                stall_data->num_regs++;
             }
+            make_dirty(registers, i_dest_reg);
+
             decode->i_type = i_type_data;
                 
 

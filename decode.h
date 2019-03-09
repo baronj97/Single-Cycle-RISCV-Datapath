@@ -74,4 +74,12 @@ struct decode_info{
 	struct uj_type_info uj_type;
 };
 
-int decode_instruction(int* instruction, struct decode_info *decode, struct register_data* registers);
+
+struct stall_check{
+    int rs1;
+    int rs2;
+    int num_regs;
+};
+
+void print_stall(struct stall_check* stall_data);
+int decode_instruction(int* instruction, struct decode_info *decode, struct register_data* registers, struct stall_check* stall_data);

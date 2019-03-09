@@ -11,6 +11,7 @@ int execute(struct decode_info *decode, int pc){
 				if ((decode->r_type.r_funct7) == 0b0000000){
 					/*ADD*/
 					decode->r_type.r_dest_reg_value = decode->r_type.r_source_reg_1_value + decode->r_type.r_source_reg_2_value;
+                    printf("Adding %d + %d\n", decode->r_type.r_source_reg_1_value , decode->r_type.r_source_reg_2_value );
                     break;
 				} else {
 					/*SUB*/
