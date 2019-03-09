@@ -34,7 +34,8 @@ int execute(struct decode_info *decode, int pc){
 			case 0b110:
 				/*OR*/
 				decode->r_type.r_dest_reg_value = decode->r_type.r_source_reg_1_value | decode->r_type.r_source_reg_2_value;
-				break;
+				printf("Or-ing: %d | %d\n",decode->r_type.r_source_reg_1_value, decode->r_type.r_source_reg_2_value);
+                break;
 			case 0b111:
 				/*AND*/
 				decode->r_type.r_dest_reg_value = decode->r_type.r_source_reg_1_value & decode->r_type.r_source_reg_2_value;

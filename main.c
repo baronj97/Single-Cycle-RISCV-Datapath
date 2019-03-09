@@ -300,7 +300,7 @@ int main(int argc, char** argv){
         }
         if(branch > 0){
             printf("Need to branch\n");
-            pc = branch - 1;
+            instruction_count = branch - 1;
           	branch = -1;
        }
         struct decode_info *temp_id = malloc(sizeof(struct decode_info));
